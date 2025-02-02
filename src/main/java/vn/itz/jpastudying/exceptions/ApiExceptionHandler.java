@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class ApiExceptionHandler {
   @ExceptionHandler(value = {ApiRequestException.class})
   public ResponseEntity<ApiException<String>> handleApiRequestException(ApiRequestException ex) {
-    HttpStatus status = ex.getHttpStatus() != null ? ex.getHttpStatus() : HttpStatus.BAD_REQUEST;
+    HttpStatus status = ex.getHttpStatus() != null ? ex.getHttpStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
 
     ApiException<String> response = new ApiException<>(
         false,
