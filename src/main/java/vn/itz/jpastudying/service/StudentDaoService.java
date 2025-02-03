@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -203,42 +204,39 @@ public class StudentDaoService {
     );
   }
 
+  @Transactional
   public ApiException<StudentSubject> deleteForCourses(int studentId, int subjectId) {
     Student student = studentRepository.findById(studentId).orElseThrow(() ->
-        new ApiRequestException("Sinh vien khong ton tai", HttpStatus.NOT_FOUND));
+        new ApiRequestException("Sinh viên không tồn tại", HttpStatus.NOT_FOUND));
 
     Subject subject = subjectRepository.findById(subjectId).orElseThrow(() ->
-        new ApiRequestException("Khoa hoc khong ton tai", HttpStatus.NOT_FOUND));
-//
-//    boolean removed = student.getStudentSubjects()
-//        .removeIf(ss -> ss.getSubject().getSubject_id() == subjectId);
-//
-//    if (!removed) {
-//      return new ApiException<>(
-//          false,
-//          "Sinh vien chua dang ky mon hoc nay",
-//          null,
-//          HttpStatus.NOT_FOUND);
-//    }
-//
-//    return new ApiException<>(
-//        true,
-//        "Xoa dang ky thanh cong",
-//        null,
-//        HttpStatus.OK);
-    for (StudentSubject ss : student.getStudentSubjects()){
-      if (ss.getSubject().getSubject_id() == subjectId){
-        return new ApiException<>(
-          true,
-          "Xoa dang ky thanh cong",
-          ss,
-          HttpStatus.OK);
+        new ApiRequestException("Khóa học không tồn tại", HttpStatus.NOT_FOUND));
+
+    StudentSubject studentSubject = null;
+    for (StudentSubject ss : student.getStudentSubjects()) {
+      if (ss.getSubject().getSubject_id() == subjectId) {
+        studentSubject = ss;
+        break;
       }
     }
+
+    if (studentSubject != null) {
+      StudentSubject deletedSubject = new StudentSubject(studentSubject.getStudent(), studentSubject.getSubject());
+      student.getStudentSubjects().remove(studentSubject);
+      studentSubjectRepository.delete(studentSubject);
+
+      return new ApiException<>(
+          true,
+          "Xóa đăng ký thành công",
+          deletedSubject,
+          HttpStatus.OK);
+    }
+
     return new ApiException<>(
-          false,
-          "Sinh vien chua dang ky mon hoc nay",
-          null,
-          HttpStatus.NOT_FOUND);
+        false,
+        "Sinh viên chưa đăng ký môn học này",
+        null,
+        HttpStatus.NOT_FOUND);
   }
+
 }
