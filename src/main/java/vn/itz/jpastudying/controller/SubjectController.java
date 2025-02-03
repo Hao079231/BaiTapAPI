@@ -20,30 +20,35 @@ public class SubjectController {
   @Autowired
   private SubjectDaoService subjectDaoService;
 
+  // Lay tat ca danh sach cac khoa hoc
   @GetMapping("/subjects")
   public ResponseEntity<ApiException<List<Subject>>> getAllSubject(){
     ApiException<List<Subject>> respone = subjectDaoService.getAllSubject();
     return ResponseEntity.status(respone.getHttpStatus()).body(respone);
   }
 
+  // Lay thong tin mot khoa hoc
   @GetMapping("/subject/{id}")
   public ResponseEntity<ApiException<Subject>> getSubjectById(@PathVariable int id) {
     ApiException<Subject> response = subjectDaoService.findSubjectById(id);
     return ResponseEntity.status(response.getHttpStatus()).body(response);
   }
 
+  // Them thong tin mot khoa hoc
   @PostMapping("/subject")
   public ResponseEntity<ApiException<Subject>> createSubject(@Valid @RequestBody Subject subject) {
     ApiException<Subject> response = subjectDaoService.createSubject(subject);
     return ResponseEntity.status(response.getHttpStatus()).body(response);
   }
 
+  // Xoa thong tin mot khoa hoc
   @DeleteMapping("/subject/{id}")
   public ResponseEntity<ApiException<Subject>> deleteSubject(@PathVariable int id) {
     ApiException<Subject> response = subjectDaoService.deleteSubject(id);
     return ResponseEntity.status(response.getHttpStatus()).body(response);
   }
 
+  // Cap nhat thong tin mot khoa hoc
   @PutMapping("/subject/{id}")
   public ResponseEntity<ApiException<Subject>> updateSubject(@PathVariable int id, @Valid @RequestBody Subject subject) {
     ApiException<Subject> response = subjectDaoService.updateSubject(id, subject);
