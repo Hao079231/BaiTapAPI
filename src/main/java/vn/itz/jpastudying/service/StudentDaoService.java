@@ -1,7 +1,9 @@
 package vn.itz.jpastudying.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import javax.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -25,13 +27,16 @@ public class StudentDaoService {
   @Autowired
   private StudentSubjectRepository studentSubjectRepository;
 
+  @Autowired
+  private EntityManager entityManager;
+
   // Lay tat ca du lieu trong bang sinh vien
   public ApiException<List<Student>> findAllStudents() {
     List<Student> students = studentRepository.findAll();
     if (students.isEmpty()) {
       return new ApiException<>(
           false,
-          "Students are empty",
+          "Bang sinh vien dang trong",
           null,
           HttpStatus.NOT_FOUND
       );
@@ -39,7 +44,7 @@ public class StudentDaoService {
 
     return new ApiException<>(
         true,
-        "All students",
+        "Danh sach tat ca sinh vien",
         students,
         HttpStatus.OK
     );
@@ -48,11 +53,11 @@ public class StudentDaoService {
   // Lay mot sinh vien bat ky trong bang sinh vien
   public ApiException<Student> findStudentById(int id) {
     Student student = studentRepository.findById(id).orElseThrow(() ->
-        new ApiRequestException("Student doesn't exist", HttpStatus.NOT_FOUND));
+        new ApiRequestException("Sinh vien khong ton tai", HttpStatus.NOT_FOUND));
 
     return new ApiException<>(
         true,
-        "Found student",
+        "Tim thay sinh vien",
         student,
         HttpStatus.OK
     );
@@ -65,7 +70,7 @@ public class StudentDaoService {
         || student.getPassword().isEmpty()) {
       return new ApiException<>(
           false,
-          "Student creation failed",
+          "Them du lieu sinh vien that bai",
           student,
           HttpStatus.BAD_REQUEST
       );
@@ -73,7 +78,7 @@ public class StudentDaoService {
     Student savedStudent = studentRepository.save(student);
     return new ApiException<>(
         true,
-        "Student created successfully",
+        "Them du lieu sinh vien thanh cong",
         savedStudent,
         HttpStatus.CREATED
     );
@@ -82,12 +87,12 @@ public class StudentDaoService {
   // Xoa du lieu trong bang sinh vien
   public ApiException<Student> deleteStudent(int id) {
     Student student = studentRepository.findById(id).orElseThrow(() ->
-        new ApiRequestException("Student doesn't exist", HttpStatus.NOT_FOUND));
+        new ApiRequestException("Sinh vien khong ton tai", HttpStatus.NOT_FOUND));
 
     studentRepository.delete(student);
     return new ApiException<>(
         true,
-        "Student deleted successfully",
+        "Sinh vien duoc xoa thanh cong",
         student,
         HttpStatus.OK
     );
@@ -98,7 +103,7 @@ public class StudentDaoService {
     if (studentRepository.findById(id).isEmpty()){
       return new ApiException<>(
           false,
-          "Student doesn't exist",
+          "Sinh vien khong ton tai",
           student,
           HttpStatus.NOT_FOUND);
     }
@@ -106,7 +111,7 @@ public class StudentDaoService {
     if (student.getUsername() == null || student.getUsername().isEmpty() || student.getFullname() == null || student.getFullname().isEmpty() || student.getBirthday() == null  || student.getPassword() == null || student.getPassword().isEmpty()) {
       return new ApiException<>(
           false,
-          "Student update failed",
+          "Du lieu sinh vien duoc sua that bai",
           student,
           HttpStatus.BAD_REQUEST
       );
@@ -114,28 +119,51 @@ public class StudentDaoService {
     Student updatedStudent = studentRepository.save(student);
     return new ApiException<>(
         true,
-        "Student updated successfully",
+        "Du lieu sinh vien duoc sua thanh cong",
         updatedStudent,
         HttpStatus.OK
     );
   }
 
   // Lay toan bo du lieu trong bang dang ky
-  public ApiException<Optional<StudentSubject>> getAllRegistration(int id) {
-    Optional<StudentSubject> res = studentSubjectRepository.findById(id);
-    if (res.isPresent()) {
+  public ApiException<List<StudentSubject>> getAllRegistration() {
+    List<StudentSubject> res = studentSubjectRepository.findAll();
+    if (res.isEmpty()) {
       return new ApiException<>(
-          true,
-          "All students",
-          res,
-          HttpStatus.OK
+          false,
+          "Khong co du trong bang dang ky",
+          null,
+          HttpStatus.NOT_FOUND
       );
     }
     return new ApiException<>(
+        true,
+        "Danh sach tat ca cac dang ky",
+        res,
+        HttpStatus.OK
+    );
+  }
+
+  public ApiException<List<Subject>> getSubjectsByStudenId(int studentId) {
+    Optional<Student> students = studentRepository.findById(studentId);
+    if (!students.isPresent()){
+      return new ApiException<>(
         false,
-        "No data available in the registration table",
+        "Sinh vien da tim khong ton tai",
         null,
         HttpStatus.NOT_FOUND
+      );
+    }
+    Student student = students.get();
+    List<Subject> subjects = new ArrayList<>();
+    for (StudentSubject ss : student.getStudentSubjects()){
+      subjects.add(ss.getSubject());
+    }
+    return new ApiException<>(
+        true,
+        "Danh sach khoa hoc ma sinh vien da dang ky",
+        subjects,
+        HttpStatus.OK
     );
   }
 
@@ -148,10 +176,10 @@ public class StudentDaoService {
       Subject subject = subjects.get();
 
       for (StudentSubject ss : student.getStudentSubjects()){
-        if (ss.getSubject().getId() == subjectId && ss.getStudent().getId() == studentId){
+        if (ss.getSubject().getSubject_id() == subjectId && ss.getStudent().getStudent_id() == studentId){
           return new ApiException<>(
               false,
-              "This subject already exists",
+              "Mon hoc nay da duoc dang ky",
               null,
               HttpStatus.CONFLICT
           );
@@ -162,16 +190,55 @@ public class StudentDaoService {
       studentSubjectRepository.save(studentSubject);
       return new ApiException<>(
           true,
-          "Successfully registered for the course",
+          "Dang ky thanh cong",
           studentSubject,
           HttpStatus.OK
       );
     }
     return new ApiException<>(
         false,
-        "Student or subject not found",
+        "Khong tim thay sinh vien hoac khoa hoc",
         null,
         HttpStatus.NOT_FOUND
     );
+  }
+
+  public ApiException<StudentSubject> deleteForCourses(int studentId, int subjectId) {
+    Student student = studentRepository.findById(studentId).orElseThrow(() ->
+        new ApiRequestException("Sinh vien khong ton tai", HttpStatus.NOT_FOUND));
+
+    Subject subject = subjectRepository.findById(subjectId).orElseThrow(() ->
+        new ApiRequestException("Khoa hoc khong ton tai", HttpStatus.NOT_FOUND));
+//
+//    boolean removed = student.getStudentSubjects()
+//        .removeIf(ss -> ss.getSubject().getSubject_id() == subjectId);
+//
+//    if (!removed) {
+//      return new ApiException<>(
+//          false,
+//          "Sinh vien chua dang ky mon hoc nay",
+//          null,
+//          HttpStatus.NOT_FOUND);
+//    }
+//
+//    return new ApiException<>(
+//        true,
+//        "Xoa dang ky thanh cong",
+//        null,
+//        HttpStatus.OK);
+    for (StudentSubject ss : student.getStudentSubjects()){
+      if (ss.getSubject().getSubject_id() == subjectId){
+        return new ApiException<>(
+          true,
+          "Xoa dang ky thanh cong",
+          ss,
+          HttpStatus.OK);
+      }
+    }
+    return new ApiException<>(
+          false,
+          "Sinh vien chua dang ky mon hoc nay",
+          null,
+          HttpStatus.NOT_FOUND);
   }
 }

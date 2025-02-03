@@ -1,5 +1,6 @@
 package vn.itz.jpastudying.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -14,7 +15,7 @@ import javax.validation.constraints.NotNull;
 public class Student {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private int id;
+  private int student_id;
 
   @NotNull(message = "Username cannot be null")
   private String username;
@@ -29,6 +30,7 @@ public class Student {
   private String password;
 
   @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
+  @JsonIgnore
   private List<StudentSubject> studentSubjects;
 
   public Student() {
@@ -41,12 +43,12 @@ public class Student {
     this.password = password;
   }
 
-  public int getId() {
-    return id;
+  public int getStudent_id() {
+    return student_id;
   }
 
-  public void setId(int id) {
-    this.id = id;
+  public void setId(int student_id) {
+    this.student_id = student_id;
   }
 
   public String getUsername() {

@@ -1,7 +1,6 @@
 package vn.itz.jpastudying.controller;
 
 import java.util.List;
-import java.util.Optional;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import vn.itz.jpastudying.exceptions.ApiException;
 import vn.itz.jpastudying.model.Student;
-import vn.itz.jpastudying.model.StudentSubject;
 import vn.itz.jpastudying.service.StudentDaoService;
 
 @RestController
@@ -55,19 +53,5 @@ public class StudentController {
   public ResponseEntity<ApiException<Student>> updateStudent(@PathVariable int id, @Valid @RequestBody Student student) {
     ApiException<Student> response = studentDaoService.updateStudent(id, student);
     return ResponseEntity.status(response.getHttpStatus()).body(response);
-  }
-
-  // Lay tat cac khoa hoc ma sinh vien dang ky
-  @GetMapping("/student/{studentId}/register")
-  public ResponseEntity<ApiException<Optional<StudentSubject>>> getAllRegistation(@PathVariable int studentId){
-    ApiException<Optional<StudentSubject>> respone = studentDaoService.getAllRegistration(studentId);
-    return ResponseEntity.status(respone.getHttpStatus()).body(respone);
-  }
-
-  // Dang ky khoa hoc cho mot sinh vien
-  @PostMapping("student/{studentId}/register/{subjectId}")
-  public ResponseEntity<ApiException<StudentSubject>> registerForCourses(@PathVariable int studentId, @PathVariable int subjectId){
-    ApiException<StudentSubject> respone = studentDaoService.registerForCourses(studentId, subjectId);
-    return ResponseEntity.status(respone.getHttpStatus()).body(respone);
   }
 }

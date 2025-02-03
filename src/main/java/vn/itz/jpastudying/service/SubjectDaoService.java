@@ -20,7 +20,7 @@ public class SubjectDaoService {
     if (subjects.isEmpty()) {
       return new ApiException<>(
           false,
-          "Subjects are empty",
+          "Danh sach khoa hoc trong",
           null,
           HttpStatus.NOT_FOUND
       );
@@ -28,7 +28,7 @@ public class SubjectDaoService {
 
     return new ApiException<>(
         true,
-        "All subjects",
+        "Danh sach cac khoa hoc",
         subjects,
         HttpStatus.OK
     );
@@ -36,11 +36,11 @@ public class SubjectDaoService {
 
   public ApiException<Subject> findSubjectById(int id) {
     Subject subject = subjectRepository.findById(id).orElseThrow(() ->
-        new ApiRequestException("Subject doesn't exist", HttpStatus.NOT_FOUND));
+        new ApiRequestException("Khoa hoc khong ton tai", HttpStatus.NOT_FOUND));
 
     return new ApiException<>(
         true,
-        "Found subject",
+        "Tim thay khoa hoc",
         subject,
         HttpStatus.OK
     );
@@ -50,7 +50,7 @@ public class SubjectDaoService {
     if (subject.getName() == null || subject.getName().isEmpty() || subject.getCode() == null || subject.getCode().isEmpty()) {
       return new ApiException<>(
           false,
-          "Subject creation failed",
+          "Them du lieu khoa hoc that bai",
           subject,
           HttpStatus.BAD_REQUEST
       );
@@ -58,7 +58,7 @@ public class SubjectDaoService {
     Subject savedSubject = subjectRepository.save(subject);
     return new ApiException<>(
         true,
-        "Subject created successfully",
+        "Them du lieu khoa hoc thanh cong",
         savedSubject,
         HttpStatus.CREATED
     );
@@ -66,12 +66,12 @@ public class SubjectDaoService {
 
   public ApiException<Subject> deleteSubject(int id) {
     Subject subject = subjectRepository.findById(id).orElseThrow(() ->
-        new ApiRequestException("Subject doesn't exist", HttpStatus.NOT_FOUND));
+        new ApiRequestException("Khoa hoc khong ton tai", HttpStatus.NOT_FOUND));
 
     subjectRepository.delete(subject);
     return new ApiException<>(
         true,
-        "Subject deleted successfully",
+        "Xoa khoa hoc thanh cong",
         subject,
         HttpStatus.OK
     );
@@ -81,7 +81,7 @@ public class SubjectDaoService {
     if (subjectRepository.findById(id).isEmpty()){
       return new ApiException<>(
           false,
-          "Subject doesn't exist",
+          "Khoa hoc khong ton tai",
           subject,
           HttpStatus.NOT_FOUND);
     }
@@ -89,7 +89,7 @@ public class SubjectDaoService {
     if (subject.getName().isEmpty() || subject.getName() == null || subject.getCode() == null || subject.getCode().isEmpty()) {
       return new ApiException<>(
           false,
-          "Subject update failed",
+          "Khong the cap nhat khoa hoc",
           subject,
           HttpStatus.BAD_REQUEST
       );
@@ -97,7 +97,7 @@ public class SubjectDaoService {
     Subject updatedSubject = subjectRepository.save(subject);
     return new ApiException<>(
         true,
-        "Subject updated successfully",
+        "Cap nhat khoa hoc thanh cong",
         updatedSubject,
         HttpStatus.OK
     );

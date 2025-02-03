@@ -1,5 +1,6 @@
 package vn.itz.jpastudying.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -12,28 +13,28 @@ import javax.persistence.OneToMany;
 public class Subject {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private int id;
+  private int subject_id;
   private String name;
   private String code;
 
   @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL)
+  @JsonIgnore
   private List<StudentSubject> studentSubjects;
 
   public Subject() {
   }
 
-  public Subject(int id, String name, String code) {
-    this.id = id;
+  public Subject(String name, String code) {
     this.name = name;
     this.code = code;
   }
 
-  public int getId() {
-    return id;
+  public int getSubject_id() {
+    return subject_id;
   }
 
-  public void setId(int id) {
-    this.id = id;
+  public void setSubject_id(int subject_id) {
+    this.subject_id = subject_id;
   }
 
   public String getName() {
