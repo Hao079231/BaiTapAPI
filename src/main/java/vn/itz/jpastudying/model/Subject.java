@@ -1,25 +1,34 @@
 package vn.itz.jpastudying.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 public class Subject {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int subject_id;
+
+  @NotNull(message = "Ten khoa hoc khong the null")
+  @Size(min = 2, message = "Ten khoa hoc phai it nhat 2 ky tu")
+  @Column(nullable = false, unique = true)
   private String name;
+
+  @NotNull(message = "Ma khoa hoc khong the null")
+  @Size(min = 2, message = "Ma khoa hoc phai it nhat 2 ky tu")
+  @Column(nullable = false, unique = true)
   private String code;
 
-  @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL)
-  @JsonIgnore
-  private List<StudentSubject> studentSubjects;
+  @ManyToMany(mappedBy = "subjects")
+  private List<Student> students = new ArrayList<>();
 
   public Subject() {
   }
@@ -51,13 +60,5 @@ public class Subject {
 
   public void setCode(String code) {
     this.code = code;
-  }
-
-  public List<StudentSubject> getStudentSubjects() {
-    return studentSubjects;
-  }
-
-  public void setStudentSubjects(List<StudentSubject> studentSubjects) {
-    this.studentSubjects = studentSubjects;
   }
 }

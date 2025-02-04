@@ -11,9 +11,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import vn.itz.jpastudying.exceptions.ApiException;
+import vn.itz.jpastudying.Dto.ApiMessageDto;
 import vn.itz.jpastudying.model.Subject;
 import vn.itz.jpastudying.service.SubjectDaoService;
+import vn.itz.jpastudying.utils.ApiResponeUtils;
 
 @RestController
 public class SubjectController {
@@ -22,36 +23,45 @@ public class SubjectController {
 
   // Lay tat ca danh sach cac khoa hoc
   @GetMapping("/subjects")
-  public ResponseEntity<ApiException<List<Subject>>> getAllSubject(){
-    ApiException<List<Subject>> respone = subjectDaoService.getAllSubject();
-    return ResponseEntity.status(respone.getHttpStatus()).body(respone);
+  public ResponseEntity<ApiMessageDto<List<Subject>>> getAllSubject(){
+    ApiMessageDto<List<Subject>> respone = ApiResponeUtils.results("Danh sach cac khoa hoc",
+        subjectDaoService.getAllSubject());
+    return ResponseEntity.ok(respone);
   }
 
   // Lay thong tin mot khoa hoc
   @GetMapping("/subject/{id}")
-  public ResponseEntity<ApiException<Subject>> getSubjectById(@PathVariable int id) {
-    ApiException<Subject> response = subjectDaoService.findSubjectById(id);
-    return ResponseEntity.status(response.getHttpStatus()).body(response);
+  public ResponseEntity<ApiMessageDto<Subject>> getSubjectById(@PathVariable int id) {
+    ApiMessageDto<Subject> response = ApiResponeUtils.results("Thong tin mot khoa hoc",
+        subjectDaoService.findSubjectById(id));
+    return ResponseEntity.ok(response);
   }
 
   // Them thong tin mot khoa hoc
   @PostMapping("/subject")
-  public ResponseEntity<ApiException<Subject>> createSubject(@Valid @RequestBody Subject subject) {
-    ApiException<Subject> response = subjectDaoService.createSubject(subject);
-    return ResponseEntity.status(response.getHttpStatus()).body(response);
+  public ResponseEntity<ApiMessageDto<Subject>> createSubject(@Valid @RequestBody Subject subject) {
+    ApiMessageDto<Subject> response = ApiResponeUtils.results("Them thong tin khoa hoc thanh cong",
+        subjectDaoService.createSubject(subject));
+    return ResponseEntity.ok(response);
   }
 
   // Xoa thong tin mot khoa hoc
   @DeleteMapping("/subject/{id}")
-  public ResponseEntity<ApiException<Subject>> deleteSubject(@PathVariable int id) {
-    ApiException<Subject> response = subjectDaoService.deleteSubject(id);
-    return ResponseEntity.status(response.getHttpStatus()).body(response);
+  public ResponseEntity<ApiMessageDto<Void>> deleteSubject(@PathVariable int id) {
+    subjectDaoService.deleteSubject(id);
+    ApiMessageDto<Void> response = ApiResponeUtils.results("Xoa thong tin khoa hoc thanh cong",
+        null);
+    return ResponseEntity.ok(response);
   }
 
   // Cap nhat thong tin mot khoa hoc
   @PutMapping("/subject/{id}")
-  public ResponseEntity<ApiException<Subject>> updateSubject(@PathVariable int id, @Valid @RequestBody Subject subject) {
-    ApiException<Subject> response = subjectDaoService.updateSubject(id, subject);
-    return ResponseEntity.status(response.getHttpStatus()).body(response);
+  public ResponseEntity<ApiMessageDto<Subject>> updateSubject(@PathVariable int id, @Valid @RequestBody Subject subject) {
+    ApiMessageDto<Subject> response = ApiResponeUtils.results("Cap nhat thong tin khoa hoc thanh cong",
+        subjectDaoService.updateSubject(id, subject));
+    return ResponseEntity.ok(response);
   }
+
+  // Dang ky mot khoa hoc cho sinh vien
+
 }

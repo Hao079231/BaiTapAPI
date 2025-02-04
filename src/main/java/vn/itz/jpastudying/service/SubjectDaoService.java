@@ -5,9 +5,12 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import vn.itz.jpastudying.exceptions.ApiException;
-import vn.itz.jpastudying.exceptions.ApiRequestException;
+import vn.itz.jpastudying.Dto.ApiMessageDto;
+import vn.itz.jpastudying.exceptions.DuplicateEntityException;
+import vn.itz.jpastudying.exceptions.ResourceNotFound;
+import vn.itz.jpastudying.model.Student;
 import vn.itz.jpastudying.model.Subject;
+import vn.itz.jpastudying.repository.StudentRepository;
 import vn.itz.jpastudying.repository.SubjectRepository;
 
 @Service
@@ -15,91 +18,44 @@ public class SubjectDaoService {
   @Autowired
   private SubjectRepository subjectRepository;
 
-  public ApiException<List<Subject>> getAllSubject() {
-    List<Subject> subjects = subjectRepository.findAll();
-    if (subjects.isEmpty()) {
-      return new ApiException<>(
-          false,
-          "Danh sach khoa hoc trong",
-          null,
-          HttpStatus.NOT_FOUND
-      );
-    }
-
-    return new ApiException<>(
-        true,
-        "Danh sach cac khoa hoc",
-        subjects,
-        HttpStatus.OK
-    );
+  // Lay danh sach tat ca khoa hoc
+  public List<Subject> getAllSubject() {
+    return subjectRepository.findAll();
   }
 
-  public ApiException<Subject> findSubjectById(int id) {
+  // Lay thong tin khoa hoc bang id
+  public Subject findSubjectById(int id) {
+    return subjectRepository.findById(id).orElseThrow(()->
+        new ResourceNotFound("Khoa hoc nay khong ton tai", HttpStatus.NOT_FOUND));
+  }
+
+  // Them du lieu khoa hoc
+  public Subject createSubject(Subject subject) {
+    if (subjectRepository.existsByName(subject.getName()))
+      throw new DuplicateEntityException("Ten khoa hoc da ton tai");
+    if (subjectRepository.existsByCode(subject.getCode()))
+      throw new DuplicateEntityException("Ma khoa hoc da ton tai");
+    return subjectRepository.save(subject);
+  }
+
+  // Xoa thong tin khoa hoc
+  public void deleteSubject(int id) {
     Subject subject = subjectRepository.findById(id).orElseThrow(() ->
-        new ApiRequestException("Khoa hoc khong ton tai", HttpStatus.NOT_FOUND));
-
-    return new ApiException<>(
-        true,
-        "Tim thay khoa hoc",
-        subject,
-        HttpStatus.OK
-    );
+        new ResourceNotFound("Khong tim thay khoa hoc", HttpStatus.NOT_FOUND));
+    subjectRepository.deleteById(id);
   }
 
-  public ApiException<Subject> createSubject(@Valid Subject subject) {
-    if (subject.getName() == null || subject.getName().isEmpty() || subject.getCode() == null || subject.getCode().isEmpty()) {
-      return new ApiException<>(
-          false,
-          "Them du lieu khoa hoc that bai",
-          subject,
-          HttpStatus.BAD_REQUEST
-      );
-    }
-    Subject savedSubject = subjectRepository.save(subject);
-    return new ApiException<>(
-        true,
-        "Them du lieu khoa hoc thanh cong",
-        savedSubject,
-        HttpStatus.CREATED
-    );
+  // Cap nhat thong tin khoa hoc
+  public Subject updateSubject(int id, Subject newSubject) {
+    Subject oldSubject = subjectRepository.findById(id).orElseThrow(()
+    -> new ResourceNotFound("Khong tim thay khoa hoc", HttpStatus.NOT_FOUND));
+    if (subjectRepository.existsByName(newSubject.getName()))
+      throw new DuplicateEntityException("Ten khoa hoc da ton tai");
+    if (subjectRepository.existsByCode(newSubject.getCode()))
+      throw new DuplicateEntityException("Ma khoa hoc da ton tai");
+    oldSubject.setName(newSubject.getName());
+    oldSubject.setCode(newSubject.getCode());
+    return subjectRepository.save(oldSubject);
   }
 
-  public ApiException<Subject> deleteSubject(int id) {
-    Subject subject = subjectRepository.findById(id).orElseThrow(() ->
-        new ApiRequestException("Khoa hoc khong ton tai", HttpStatus.NOT_FOUND));
-
-    subjectRepository.delete(subject);
-    return new ApiException<>(
-        true,
-        "Xoa khoa hoc thanh cong",
-        subject,
-        HttpStatus.OK
-    );
-  }
-
-  public ApiException<Subject> updateSubject(int id, @Valid Subject subject) {
-    if (subjectRepository.findById(id).isEmpty()){
-      return new ApiException<>(
-          false,
-          "Khoa hoc khong ton tai",
-          subject,
-          HttpStatus.NOT_FOUND);
-    }
-
-    if (subject.getName().isEmpty() || subject.getName() == null || subject.getCode() == null || subject.getCode().isEmpty()) {
-      return new ApiException<>(
-          false,
-          "Khong the cap nhat khoa hoc",
-          subject,
-          HttpStatus.BAD_REQUEST
-      );
-    }
-    Subject updatedSubject = subjectRepository.save(subject);
-    return new ApiException<>(
-        true,
-        "Cap nhat khoa hoc thanh cong",
-        updatedSubject,
-        HttpStatus.OK
-    );
-  }
 }

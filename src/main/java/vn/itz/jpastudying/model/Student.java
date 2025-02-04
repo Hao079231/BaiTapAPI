@@ -1,15 +1,20 @@
 package vn.itz.jpastudying.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Size;
 
 @Entity
 public class Student {
@@ -17,21 +22,32 @@ public class Student {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int student_id;
 
-  @NotNull(message = "Username cannot be null")
+  @NotNull(message = "Username khong the null")
+  @Size(min = 2, message = "Username phai it nhat co 2 ky tu")
+  @Column(nullable = false, unique = true)
   private String username;
 
-  @NotNull(message = "Fullname cannot be null")
+  @NotNull(message = "Fullname khong the null")
+  @Size(min = 2, message = "Fullname phai it nhat co 2 ky tu")
+  @Column(nullable = false)
   private String fullname;
 
-  @NotNull(message = "Birthday cannot be null")
+  @NotNull(message = "Birthday khong the null")
+  @Past(message = "Ngay sinh phai la trong qua khu")
   private Date birthday;
 
-  @NotNull(message = "Password cannot be null")
+  @NotNull(message = "Password khong the null")
+  @Size(min = 5, message = "Password phai it nhat co 5 ky tu")
+  @Column(nullable = false)
   private String password;
 
-  @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
-  @JsonIgnore
-  private List<StudentSubject> studentSubjects;
+  @ManyToMany(fetch = FetchType.LAZY)
+  @JoinTable(
+      name = "student_subject",
+      joinColumns = @JoinColumn(name = "student_id"),
+      inverseJoinColumns = @JoinColumn(name = "subject_id")
+  )
+  private List<Subject> subjects = new ArrayList<>();
 
   public Student() {
   }
@@ -83,11 +99,11 @@ public class Student {
     this.password = password;
   }
 
-  public List<StudentSubject> getStudentSubjects() {
-    return studentSubjects;
+  public List<Subject> getSubjects() {
+    return subjects;
   }
 
-  public void setStudentSubjects(List<StudentSubject> studentSubjects) {
-    this.studentSubjects = studentSubjects;
+  public void setSubjects(List<Subject> subjects) {
+    this.subjects = subjects;
   }
 }
