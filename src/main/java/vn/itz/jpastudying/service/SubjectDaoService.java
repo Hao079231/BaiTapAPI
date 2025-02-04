@@ -1,16 +1,12 @@
 package vn.itz.jpastudying.service;
 
 import java.util.List;
-import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import vn.itz.jpastudying.Dto.ApiMessageDto;
 import vn.itz.jpastudying.exceptions.DuplicateEntityException;
 import vn.itz.jpastudying.exceptions.ResourceNotFound;
-import vn.itz.jpastudying.model.Student;
 import vn.itz.jpastudying.model.Subject;
-import vn.itz.jpastudying.repository.StudentRepository;
 import vn.itz.jpastudying.repository.SubjectRepository;
 
 @Service
