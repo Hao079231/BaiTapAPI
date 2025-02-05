@@ -12,8 +12,16 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 public class SubjectRegistration {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,6 +34,7 @@ public class SubjectRegistration {
 
   @ManyToOne
   @JoinColumn(name = "subject_id")
+  @JsonBackReference
   private Subject subject;
 
   @Temporal(TemporalType.TIMESTAMP)
@@ -36,45 +45,5 @@ public class SubjectRegistration {
 
   public enum Status{
     PENDING, ACTIVE
-  }
-
-  public int getRegistration_id() {
-    return registration_id;
-  }
-
-  public void setRegistration_id(int registration_id) {
-    this.registration_id = registration_id;
-  }
-
-  public Student getStudent() {
-    return student;
-  }
-
-  public void setStudent(Student student) {
-    this.student = student;
-  }
-
-  public Subject getSubject() {
-    return subject;
-  }
-
-  public void setSubject(Subject subject) {
-    this.subject = subject;
-  }
-
-  public Date getDateRegister() {
-    return dateRegister;
-  }
-
-  public void setDateRegister(Date dateRegister) {
-    this.dateRegister = dateRegister;
-  }
-
-  public Status getStatus() {
-    return status;
-  }
-
-  public void setStatus(Status status) {
-    this.status = status;
   }
 }

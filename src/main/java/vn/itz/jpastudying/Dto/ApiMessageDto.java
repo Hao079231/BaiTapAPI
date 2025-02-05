@@ -3,10 +3,14 @@ package vn.itz.jpastudying.Dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
 @Data
 @JsonInclude(Include.NON_NULL)
+@Getter
+@Setter
 public class ApiMessageDto<T> {
   private boolean result;
   private String message;
@@ -23,35 +27,35 @@ public class ApiMessageDto<T> {
     this.status = status;
   }
 
-  public boolean isResult() {
-    return result;
-  }
-
-  public void setResult(boolean result) {
-    this.result = result;
-  }
-
-  public String getMessage() {
-    return message;
-  }
-
-  public void setMessage(String message) {
-    this.message = message;
-  }
-
-  public T getData() {
-    return data;
-  }
-
-  public void setData(T data) {
-    this.data = data;
-  }
-
-  public HttpStatus getStatus() {
-    return status;
-  }
-
-  public void setStatus(HttpStatus status) {
-    this.status = status;
-  }
+//  public boolean isResult() {
+//    return result;
+//  }
+//
+//  public void setResult(boolean result) {
+//    this.result = result;
+//  }
+//
+//  public String getMessage() {
+//    return message;
+//  }
+//
+//  public void setMessage(String message) {
+//    this.message = message;
+//  }
+//
+//  public T getData() {
+//    return data;
+//  }
+//
+//  public void setData(T data) {
+//    this.data = data;
+//  }
+//
+//  public HttpStatus getStatus() {
+//    return status;
+//  }
+//
+//  public void setStatus(HttpStatus status) {
+//    this.status = status;
+//  }
 }

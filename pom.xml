@@ -73,9 +73,9 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.12</version>  <!-- Thêm version -->
-			<scope>provided</scope>
-			<optional>true</optional>
+			<version>1.18.20</version>
+<!--			<scope>provided</scope>-->
+<!--			<optional>true</optional>-->
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.modelmapper/modelmapper -->
@@ -116,8 +116,7 @@
 						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
-							<version>1.18.12</version>
-							<scope>provided</scope>
+							<version>1.18.20</version>
 						</path>
 						<path>
 							<groupId>org.mapstruct</groupId>

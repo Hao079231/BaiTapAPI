@@ -5,7 +5,9 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
+import lombok.Getter;
 
+@Getter
 public class StudentCreateRequestDto {
   @NotNull(message = "Username khong the null")
   @NotEmpty(message = "User khong the trong")
@@ -22,20 +24,4 @@ public class StudentCreateRequestDto {
   @NotNull(message = "Password khong the null")
   @Size(min = 5, message = "Password phai it nhat co 5 ky tu")
   private String passWord;
-
-  public String getUserName() {
-    return userName;
-  }
-
-  public String getFullName() {
-    return fullName;
-  }
-
-  public Date getBirthDate() {
-    return birthDate;
-  }
-
-  public String getPassWord() {
-    return passWord;
-  }
 }

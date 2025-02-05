@@ -19,8 +19,16 @@ import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Student {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,70 +57,4 @@ public class Student {
   @JsonManagedReference
   private List<SubjectRegistration> registrations = new ArrayList<>();
 
-  public Student() {
-  }
-
-  public Student(String username, String fullname, Date birthday, String password) {
-    this.username = username;
-    this.fullname = fullname;
-    this.birthday = birthday;
-    this.password = password;
-  }
-
-  public int getStudent_id() {
-    return student_id;
-  }
-
-  public void setStudent_id(int student_id) {
-    this.student_id = student_id;
-  }
-
-  public String getUsername() {
-    return username;
-  }
-
-  public void setUsername(String username) {
-    this.username = username;
-  }
-
-  public String getFullname() {
-    return fullname;
-  }
-
-  public void setFullname(String fullname) {
-    this.fullname = fullname;
-  }
-
-  public Date getBirthday() {
-    return birthday;
-  }
-
-  public void setBirthday(Date birthday) {
-    this.birthday = birthday;
-  }
-
-  public String getPassword() {
-    return password;
-  }
-
-  public void setPassword(String password) {
-    this.password = password;
-  }
-
-//  @JsonIgnore
-//  public List<Subject> getSubjects() {
-//    return subjects;
-//  }
-//
-//  public void setSubjects(List<Subject> subjects) {
-//    this.subjects = subjects;
-//  }
-
-  public List<SubjectRegistration> getRegistrations() {
-    return registrations;
-  }
-
-  public void setRegistrations(List<SubjectRegistration> registrations) {
-    this.registrations = registrations;
-  }
 }
