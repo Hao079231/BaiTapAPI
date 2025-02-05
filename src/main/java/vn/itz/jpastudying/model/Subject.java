@@ -17,13 +17,9 @@ public class Subject {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int subject_id;
 
-  @NotNull(message = "Ten khoa hoc khong the null")
-  @Size(min = 2, message = "Ten khoa hoc phai it nhat 2 ky tu")
   @Column(nullable = false, unique = true)
   private String name;
 
-  @NotNull(message = "Ma khoa hoc khong the null")
-  @Size(min = 2, message = "Ma khoa hoc phai it nhat 2 ky tu")
   @Column(nullable = false, unique = true)
   private String code;
 

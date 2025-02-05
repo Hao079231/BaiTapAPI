@@ -4,8 +4,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import vn.itz.jpastudying.Dto.request.StudentCreateRequestDto;
+import vn.itz.jpastudying.Dto.request.StudentUpdateRequestDto;
+import vn.itz.jpastudying.Dto.response.StudentResponseDto;
 import vn.itz.jpastudying.exceptions.DuplicateEntityException;
 import vn.itz.jpastudying.exceptions.ResourceNotFound;
+import vn.itz.jpastudying.mapper.StudentMapper;
 import vn.itz.jpastudying.model.Student;
 import vn.itz.jpastudying.model.Subject;
 import vn.itz.jpastudying.repository.StudentRepository;
@@ -19,22 +23,26 @@ public class StudentDaoService {
   @Autowired
   private SubjectRepository subjectRepository;
 
+  @Autowired
+  private StudentMapper studentMapper;
+
   // Lay tat ca du lieu trong bang sinh vien
-  public List<Student> findAllStudents() {
-    return studentRepository.findAll();
+  public List<StudentResponseDto> findAllStudents() {
+    return studentMapper.convertToListStudentResponse(studentRepository.findAll());
   }
 
   // Lay mot sinh vien bat ky trong bang sinh vien
-  public Student findStudentById(int id) {
-    return studentRepository.findById(id).orElseThrow(() ->
-        new ResourceNotFound("Sinh vien khong ton tai", HttpStatus.NOT_FOUND));
+  public StudentResponseDto findStudentById(int id) {
+    return studentMapper.convertToStudentResponse(studentRepository.findById(id).orElseThrow(() ->
+        new ResourceNotFound("Sinh vien khong ton tai", HttpStatus.NOT_FOUND)));
   }
 
   // Them du lieu trong bang sinh vien
-  public Student createStudent(Student student) {
-    if (studentRepository.existsByUsername(student.getUsername()))
+  public StudentResponseDto createStudent(StudentCreateRequestDto student) {
+    if (studentRepository.existsByUsername(student.getUserName()))
       throw new DuplicateEntityException("Username nay da ton tai");
-    return studentRepository.save(student);
+    Student newStudent = studentMapper.convertToStudent(student);
+    return studentMapper.convertToStudentResponse(studentRepository.save(newStudent));
   }
 
   // Xoa du lieu trong bang sinh vien
@@ -45,17 +53,15 @@ public class StudentDaoService {
   }
 
   // Sua du lieu trong bang sinh vien
-  public Student updateStudent(int id, Student newStudent) {
+  public StudentResponseDto updateStudent(int id, StudentUpdateRequestDto newStudent) {
     Student oldStudent = studentRepository.findById(id).
         orElseThrow(() -> new ResourceNotFound("Sinh vien nay khong ton tai", HttpStatus.NOT_FOUND));
-    if (studentRepository.existsByUsername(newStudent.getUsername()))
+    if (studentRepository.existsByUsername(newStudent.getUserName()))
       throw new DuplicateEntityException("Username nay da ton tai");
-    oldStudent.setUsername(newStudent.getUsername());
-    oldStudent.setFullname(newStudent.getFullname());
-    oldStudent.setBirthday(newStudent.getBirthday());
-    oldStudent.setPassword(newStudent.getPassword());
+    studentMapper.updateStudent(oldStudent, newStudent);
 
-    return studentRepository.save(oldStudent);
+
+    return studentMapper.convertToStudentResponse(studentRepository.save(oldStudent));
   }
 
   //Lay danh sach khoa hoc ma sinh vien dang ky

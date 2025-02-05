@@ -1,5 +1,6 @@
 package vn.itz.jpastudying.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,22 +23,14 @@ public class Student {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int student_id;
 
-  @NotNull(message = "Username khong the null")
-  @Size(min = 2, message = "Username phai it nhat co 2 ky tu")
   @Column(nullable = false, unique = true)
   private String username;
 
-  @NotNull(message = "Fullname khong the null")
-  @Size(min = 2, message = "Fullname phai it nhat co 2 ky tu")
   @Column(nullable = false)
   private String fullname;
 
-  @NotNull(message = "Birthday khong the null")
-  @Past(message = "Ngay sinh phai la trong qua khu")
   private Date birthday;
 
-  @NotNull(message = "Password khong the null")
-  @Size(min = 5, message = "Password phai it nhat co 5 ky tu")
   @Column(nullable = false)
   private String password;
 
@@ -99,6 +92,7 @@ public class Student {
     this.password = password;
   }
 
+  @JsonIgnore
   public List<Subject> getSubjects() {
     return subjects;
   }

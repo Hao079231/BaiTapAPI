@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import vn.itz.jpastudying.Dto.ApiMessageDto;
+import vn.itz.jpastudying.Dto.request.StudentCreateRequestDto;
+import vn.itz.jpastudying.Dto.request.StudentUpdateRequestDto;
+import vn.itz.jpastudying.Dto.response.StudentResponseDto;
 import vn.itz.jpastudying.model.Student;
 import vn.itz.jpastudying.model.Subject;
 import vn.itz.jpastudying.service.StudentDaoService;
@@ -24,25 +27,25 @@ public class StudentController {
 
   // Lay tat ca du lieu trong bang sinh vien
   @GetMapping("/students")
-  public ResponseEntity<ApiMessageDto<List<Student>>> getAllStudents(){
-    ApiMessageDto<List<Student>> respone = ApiResponeUtils.results("Danh sach sinh vien",
+  public ResponseEntity<ApiMessageDto<List<StudentResponseDto>>> getAllStudents(){
+    ApiMessageDto<List<StudentResponseDto>> respone = ApiResponeUtils.results("Danh sach sinh vien",
         studentDaoService.findAllStudents());
     return ResponseEntity.ok(respone);
   }
 
 //   Lay ra du lieu cua mot sinh vien
   @GetMapping("/student/{id}")
-  public ResponseEntity<ApiMessageDto<Student>> getStudentById(@PathVariable int id) {
+  public ResponseEntity<ApiMessageDto<StudentResponseDto>> getStudentById(@PathVariable int id) {
 
-    ApiMessageDto<Student> response = ApiResponeUtils.results("Thong tin sinh vien",
+    ApiMessageDto<StudentResponseDto> response = ApiResponeUtils.results("Thong tin sinh vien",
         studentDaoService.findStudentById(id));
     return ResponseEntity.ok(response);
   }
 
   // Them mot sinh vien vao bang
   @PostMapping("/student")
-  public ResponseEntity<ApiMessageDto<Student>> createStudent(@Valid @RequestBody Student student) {
-    ApiMessageDto<Student> response = ApiResponeUtils.results("Them du lieu sinh vien thanh cong",
+  public ResponseEntity<ApiMessageDto<StudentResponseDto>> createStudent(@Valid @RequestBody StudentCreateRequestDto student) {
+    ApiMessageDto<StudentResponseDto> response = ApiResponeUtils.results("Them du lieu sinh vien thanh cong",
         studentDaoService.createStudent(student));
     return ResponseEntity.ok(response);
   }
@@ -58,8 +61,8 @@ public class StudentController {
 
   // Cap nhat du lieu sinh vien trong bang
   @PutMapping("/student/{id}")
-  public ResponseEntity<ApiMessageDto<Student>> updateStudent(@PathVariable int id, @Valid @RequestBody Student student) {
-    ApiMessageDto<Student> response = ApiResponeUtils.results("Cap nhat du lieu sinh vien thanh cong",
+  public ResponseEntity<ApiMessageDto<StudentResponseDto>> updateStudent(@PathVariable int id, @Valid @RequestBody StudentUpdateRequestDto student) {
+    ApiMessageDto<StudentResponseDto> response = ApiResponeUtils.results("Cap nhat du lieu sinh vien thanh cong",
         studentDaoService.updateStudent(id, student));
     return ResponseEntity.ok(response);
   }
