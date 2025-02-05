@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import vn.itz.jpastudying.Dto.ApiMessageDto;
+import vn.itz.jpastudying.Dto.request.SubjectCreateRequestDto;
+import vn.itz.jpastudying.Dto.request.SubjectUpdateRequestDto;
+import vn.itz.jpastudying.Dto.response.SubjectResponseDto;
 import vn.itz.jpastudying.model.Subject;
 import vn.itz.jpastudying.service.SubjectDaoService;
 import vn.itz.jpastudying.utils.ApiResponeUtils;
@@ -23,24 +26,24 @@ public class SubjectController {
 
   // Lay tat ca danh sach cac khoa hoc
   @GetMapping("/subjects")
-  public ResponseEntity<ApiMessageDto<List<Subject>>> getAllSubject(){
-    ApiMessageDto<List<Subject>> respone = ApiResponeUtils.results("Danh sach cac khoa hoc",
+  public ResponseEntity<ApiMessageDto<List<SubjectResponseDto>>> getAllSubject(){
+    ApiMessageDto<List<SubjectResponseDto>> respone = ApiResponeUtils.results("Danh sach cac khoa hoc",
         subjectDaoService.getAllSubject());
     return ResponseEntity.ok(respone);
   }
 
   // Lay thong tin mot khoa hoc
   @GetMapping("/subject/{id}")
-  public ResponseEntity<ApiMessageDto<Subject>> getSubjectById(@PathVariable int id) {
-    ApiMessageDto<Subject> response = ApiResponeUtils.results("Thong tin mot khoa hoc",
+  public ResponseEntity<ApiMessageDto<SubjectResponseDto>> getSubjectById(@PathVariable int id) {
+    ApiMessageDto<SubjectResponseDto> response = ApiResponeUtils.results("Thong tin mot khoa hoc",
         subjectDaoService.findSubjectById(id));
     return ResponseEntity.ok(response);
   }
 
   // Them thong tin mot khoa hoc
   @PostMapping("/subject")
-  public ResponseEntity<ApiMessageDto<Subject>> createSubject(@Valid @RequestBody Subject subject) {
-    ApiMessageDto<Subject> response = ApiResponeUtils.results("Them thong tin khoa hoc thanh cong",
+  public ResponseEntity<ApiMessageDto<SubjectResponseDto>> createSubject(@Valid @RequestBody SubjectCreateRequestDto subject) {
+    ApiMessageDto<SubjectResponseDto> response = ApiResponeUtils.results("Them thong tin khoa hoc thanh cong",
         subjectDaoService.createSubject(subject));
     return ResponseEntity.ok(response);
   }
@@ -56,8 +59,8 @@ public class SubjectController {
 
   // Cap nhat thong tin mot khoa hoc
   @PutMapping("/subject/{id}")
-  public ResponseEntity<ApiMessageDto<Subject>> updateSubject(@PathVariable int id, @Valid @RequestBody Subject subject) {
-    ApiMessageDto<Subject> response = ApiResponeUtils.results("Cap nhat thong tin khoa hoc thanh cong",
+  public ResponseEntity<ApiMessageDto<SubjectResponseDto>> updateSubject(@PathVariable int id, @Valid @RequestBody SubjectUpdateRequestDto subject) {
+    ApiMessageDto<SubjectResponseDto> response = ApiResponeUtils.results("Cap nhat thong tin khoa hoc thanh cong",
         subjectDaoService.updateSubject(id, subject));
     return ResponseEntity.ok(response);
   }

@@ -4,8 +4,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import vn.itz.jpastudying.Dto.request.SubjectCreateRequestDto;
+import vn.itz.jpastudying.Dto.request.SubjectUpdateRequestDto;
+import vn.itz.jpastudying.Dto.response.SubjectResponseDto;
 import vn.itz.jpastudying.exceptions.DuplicateEntityException;
 import vn.itz.jpastudying.exceptions.ResourceNotFound;
+import vn.itz.jpastudying.mapper.SubjectMapper;
 import vn.itz.jpastudying.model.Subject;
 import vn.itz.jpastudying.repository.SubjectRepository;
 
@@ -14,24 +18,28 @@ public class SubjectDaoService {
   @Autowired
   private SubjectRepository subjectRepository;
 
+  @Autowired
+  private SubjectMapper subjectMapper;
+
   // Lay danh sach tat ca khoa hoc
-  public List<Subject> getAllSubject() {
-    return subjectRepository.findAll();
+  public List<SubjectResponseDto> getAllSubject() {
+    return subjectMapper.convertToListStudentResponse(subjectRepository.findAll());
   }
 
   // Lay thong tin khoa hoc bang id
-  public Subject findSubjectById(int id) {
-    return subjectRepository.findById(id).orElseThrow(()->
-        new ResourceNotFound("Khoa hoc nay khong ton tai", HttpStatus.NOT_FOUND));
+  public SubjectResponseDto findSubjectById(int id) {
+    return subjectMapper.convertToSubjectResponse(subjectRepository.findById(id).orElseThrow(()->
+        new ResourceNotFound("Khoa hoc nay khong ton tai", HttpStatus.NOT_FOUND)));
   }
 
   // Them du lieu khoa hoc
-  public Subject createSubject(Subject subject) {
-    if (subjectRepository.existsByName(subject.getName()))
+  public SubjectResponseDto createSubject(SubjectCreateRequestDto subject) {
+    if (subjectRepository.existsByName(subject.getSubjectName()))
       throw new DuplicateEntityException("Ten khoa hoc da ton tai");
-    if (subjectRepository.existsByCode(subject.getCode()))
+    if (subjectRepository.existsByCode(subject.getSubjectCode()))
       throw new DuplicateEntityException("Ma khoa hoc da ton tai");
-    return subjectRepository.save(subject);
+    Subject newSubject = subjectMapper.convertToSubject(subject);
+    return subjectMapper.convertToSubjectResponse(subjectRepository.save(newSubject));
   }
 
   // Xoa thong tin khoa hoc
@@ -42,16 +50,15 @@ public class SubjectDaoService {
   }
 
   // Cap nhat thong tin khoa hoc
-  public Subject updateSubject(int id, Subject newSubject) {
+  public SubjectResponseDto updateSubject(int id, SubjectUpdateRequestDto newSubject) {
     Subject oldSubject = subjectRepository.findById(id).orElseThrow(()
     -> new ResourceNotFound("Khong tim thay khoa hoc", HttpStatus.NOT_FOUND));
-    if (subjectRepository.existsByName(newSubject.getName()))
+    if (subjectRepository.existsByName(newSubject.getSubjectName()))
       throw new DuplicateEntityException("Ten khoa hoc da ton tai");
-    if (subjectRepository.existsByCode(newSubject.getCode()))
+    if (subjectRepository.existsByCode(newSubject.getSubjectCode()))
       throw new DuplicateEntityException("Ma khoa hoc da ton tai");
-    oldSubject.setName(newSubject.getName());
-    oldSubject.setCode(newSubject.getCode());
-    return subjectRepository.save(oldSubject);
+    subjectMapper.updateStudent(oldSubject, newSubject);
+    return subjectMapper.convertToSubjectResponse(subjectRepository.save(oldSubject));
   }
 
 }

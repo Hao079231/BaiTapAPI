@@ -31,5 +31,5 @@ public interface StudentMapper {
   @Mapping(source = "birthDate", target = "birthday")
   @Mapping(source = "userName", target = "username")
   @Mapping(source = "fullName", target = "fullname")
-  void updateStudent(@MappingTarget Student student, StudentUpdateRequestDto requestDto);
+  void updateStudent(@MappingTarget Student student, StudentUpdateRequestDto studentDto);
 }
