@@ -1,9 +1,11 @@
 package vn.itz.jpastudying.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
@@ -34,13 +37,17 @@ public class Student {
   @Column(nullable = false)
   private String password;
 
-  @ManyToMany(fetch = FetchType.LAZY)
-  @JoinTable(
-      name = "student_subject",
-      joinColumns = @JoinColumn(name = "student_id"),
-      inverseJoinColumns = @JoinColumn(name = "subject_id")
-  )
-  private List<Subject> subjects = new ArrayList<>();
+//  @ManyToMany(fetch = FetchType.LAZY)
+//  @JoinTable(
+//      name = "student_subject",
+//      joinColumns = @JoinColumn(name = "student_id"),
+//      inverseJoinColumns = @JoinColumn(name = "subject_id")
+//  )
+//  private List<Subject> subjects = new ArrayList<>();
+
+  @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
+  @JsonManagedReference
+  private List<SubjectRegistration> registrations = new ArrayList<>();
 
   public Student() {
   }
@@ -56,7 +63,7 @@ public class Student {
     return student_id;
   }
 
-  public void setId(int student_id) {
+  public void setStudent_id(int student_id) {
     this.student_id = student_id;
   }
 
@@ -92,12 +99,20 @@ public class Student {
     this.password = password;
   }
 
-  @JsonIgnore
-  public List<Subject> getSubjects() {
-    return subjects;
+//  @JsonIgnore
+//  public List<Subject> getSubjects() {
+//    return subjects;
+//  }
+//
+//  public void setSubjects(List<Subject> subjects) {
+//    this.subjects = subjects;
+//  }
+
+  public List<SubjectRegistration> getRegistrations() {
+    return registrations;
   }
 
-  public void setSubjects(List<Subject> subjects) {
-    this.subjects = subjects;
+  public void setRegistrations(List<SubjectRegistration> registrations) {
+    this.registrations = registrations;
   }
 }

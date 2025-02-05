@@ -1,6 +1,10 @@
 package vn.itz.jpastudying.service;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -12,7 +16,9 @@ import vn.itz.jpastudying.exceptions.ResourceNotFound;
 import vn.itz.jpastudying.mapper.StudentMapper;
 import vn.itz.jpastudying.model.Student;
 import vn.itz.jpastudying.model.Subject;
+import vn.itz.jpastudying.model.SubjectRegistration;
 import vn.itz.jpastudying.repository.StudentRepository;
+import vn.itz.jpastudying.repository.SubjectRegistrationRepository;
 import vn.itz.jpastudying.repository.SubjectRepository;
 
 @Service
@@ -22,6 +28,9 @@ public class StudentDaoService {
 
   @Autowired
   private SubjectRepository subjectRepository;
+
+  @Autowired
+  SubjectRegistrationRepository subjectRegistrationRepository;
 
   @Autowired
   private StudentMapper studentMapper;
@@ -64,38 +73,74 @@ public class StudentDaoService {
     return studentMapper.convertToStudentResponse(studentRepository.save(oldStudent));
   }
 
-  //Lay danh sach khoa hoc ma sinh vien dang ky
-  public List<Subject> getEnrolledSubjects(int studentId) {
+  //Lay danh sach khoa hoc ma sinh vien dang ky - ManyToMany
+//  public List<Subject> getEnrolledSubjects(int studentId) {
+//    Student student = studentRepository.findById(studentId).orElseThrow(() ->
+//        new ResourceNotFound("Khong tim thay sinh vien", HttpStatus.NOT_FOUND));
+//    return student.getSubjects();
+//  }
+
+  //Lay danh sach khoa hoc ma sinh vien dang ky - ManyToOne, OneToMany
+    public List<SubjectRegistration> getEnrolledSubjects(int studentId) {
     Student student = studentRepository.findById(studentId).orElseThrow(() ->
         new ResourceNotFound("Khong tim thay sinh vien", HttpStatus.NOT_FOUND));
-    return student.getSubjects();
+    return student.getRegistrations();
   }
 
-  // Dang ky mot khoa hoc cho mot sinh vien
+  // Dang ky mot khoa hoc cho mot sinh vien - ManyToMany
+//  public Student enrollSubject(int studentId, int subjectId){
+//    Student student = studentRepository.findById(studentId)
+//        .orElseThrow(() -> new ResourceNotFound("Sinh vien khong ton tai", HttpStatus.NOT_FOUND));
+//    Subject subject = subjectRepository.findById(subjectId)
+//        .orElseThrow(() -> new ResourceNotFound("Khoa hoc khong ton tai", HttpStatus.NOT_FOUND));
+//
+//    if (!student.getSubjects().contains(subject)) {
+//      student.getSubjects().add(subject);
+//      studentRepository.save(student);
+//    }
+//    return student;
+//  }
+
+  // Dang ky mot khoa hoc cho mot sinh vien - ManyToOne, OneToMany
   public Student enrollSubject(int studentId, int subjectId){
     Student student = studentRepository.findById(studentId)
         .orElseThrow(() -> new ResourceNotFound("Sinh vien khong ton tai", HttpStatus.NOT_FOUND));
     Subject subject = subjectRepository.findById(subjectId)
         .orElseThrow(() -> new ResourceNotFound("Khoa hoc khong ton tai", HttpStatus.NOT_FOUND));
+    if (subjectRegistrationRepository.findById(subjectId).isPresent())
+      throw new DuplicateEntityException("Khoa hoc nay da duoc dang ky");
 
-    if (!student.getSubjects().contains(subject)) {
-      student.getSubjects().add(subject);
-      studentRepository.save(student);
-    }
+    SubjectRegistration registration = new SubjectRegistration();
+    registration.setStudent(student);
+    registration.setSubject(subject);
+    registration.setDateRegister(new Date());
+    registration.setStatus(SubjectRegistration.Status.PENDING);
+
+    student.getRegistrations().add(registration);
+    studentRepository.save(student);
     return student;
   }
 
-  // Xoa mot khoa hoc da dang ky
+  // Xoa mot khoa hoc da dang ky - ManyToMany
+//  public Student removeSubject(int studentId, int subjectId) {
+//    Student student = studentRepository.findById(studentId)
+//        .orElseThrow(() -> new ResourceNotFound("Sinh vien khong ton tai", HttpStatus.NOT_FOUND));
+//    Subject subject = subjectRepository.findById(subjectId)
+//        .orElseThrow(() -> new ResourceNotFound("Khoa hoc khong ton tai", HttpStatus.NOT_FOUND));
+//
+//    if (student.getSubjects().contains(subject)) {
+//      student.getSubjects().remove(subject);
+//      studentRepository.save(student);
+//    }
+//    return student;
+//  }
+
+  // Xoa mot khoa hoc da dang ky - ManyToOne, OneToMany
+  @Transactional
   public Student removeSubject(int studentId, int subjectId) {
-    Student student = studentRepository.findById(studentId)
-        .orElseThrow(() -> new ResourceNotFound("Sinh vien khong ton tai", HttpStatus.NOT_FOUND));
-    Subject subject = subjectRepository.findById(subjectId)
-        .orElseThrow(() -> new ResourceNotFound("Khoa hoc khong ton tai", HttpStatus.NOT_FOUND));
 
-    if (student.getSubjects().contains(subject)) {
-      student.getSubjects().remove(subject);
-      studentRepository.save(student);
-    }
-    return student;
+    subjectRegistrationRepository.deleteByStudentIdAndSubjectId(studentId, subjectId);
+    return studentRepository.findById(studentId).orElse(null);
   }
+
 }
