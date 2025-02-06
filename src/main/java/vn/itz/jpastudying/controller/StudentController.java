@@ -3,6 +3,7 @@ package vn.itz.jpastudying.controller;
 import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,12 +11,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import vn.itz.jpastudying.Dto.ApiMessageDto;
+import vn.itz.jpastudying.Dto.StudentPagination;
 import vn.itz.jpastudying.Dto.request.StudentCreateRequestDto;
 import vn.itz.jpastudying.Dto.request.StudentUpdateRequestDto;
 import vn.itz.jpastudying.Dto.response.StudentResponseDto;
 import vn.itz.jpastudying.model.Student;
+import vn.itz.jpastudying.model.StudentCriteria;
 import vn.itz.jpastudying.model.Subject;
 import vn.itz.jpastudying.model.SubjectRegistration;
 import vn.itz.jpastudying.service.StudentDaoService;
@@ -98,5 +102,15 @@ public class StudentController {
     ApiMessageDto<Student> respone = ApiResponeUtils.results("Xoa khoa hoc thanh cong",
         studentDaoService.removeSubject(student_id, subject_id));
     return ResponseEntity.ok(respone);
+  }
+
+  @GetMapping("/student/pagination")
+  public ResponseEntity<ApiMessageDto<StudentPagination<StudentResponseDto>>> getAllStudents(
+      StudentCriteria studentCriteria, Pageable pageable) {
+
+    StudentPagination<StudentResponseDto> students = studentDaoService.getFilteredStudents(studentCriteria, pageable);
+    ApiMessageDto<StudentPagination<StudentResponseDto>> response = ApiResponeUtils.results("Danh sách sinh viên", students);
+
+    return ResponseEntity.ok(response);
   }
 }

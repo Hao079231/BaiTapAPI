@@ -10,6 +10,7 @@ import vn.itz.jpastudying.model.SubjectRegistration;
 public interface SubjectRegistrationRepository extends JpaRepository<SubjectRegistration, Integer> {
   @Transactional
   @Modifying
-  @Query("DELETE FROM SubjectRegistration sr WHERE sr.student.student_id = :studentId AND sr.subject.subject_id = :subjectId")
+  @Query("DELETE FROM SubjectRegistration sr WHERE sr.student.id = :studentId AND sr.subject.id = :subjectId")
   void deleteByStudentIdAndSubjectId(@Param("studentId") int studentId, @Param("subjectId") int subjectId);
+  boolean existsByStudentIdAndSubjectId(int studentId, int subjectId);
 }

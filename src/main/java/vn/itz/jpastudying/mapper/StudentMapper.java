@@ -18,7 +18,7 @@ public interface StudentMapper {
   @Mapping(source = "passWord", target = "password")
   Student convertToStudent(StudentCreateRequestDto requestDto);
 
-  @Mapping(source = "student_id", target = "studentId")
+  @Mapping(source = "id", target = "studentId")
   @Mapping(source = "username", target = "userName")
   @Mapping(source = "fullname", target = "fullName")
   @Mapping(source = "birthday", target = "birthDate")

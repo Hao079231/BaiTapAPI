@@ -32,7 +32,7 @@ import lombok.Setter;
 public class Student {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private int student_id;
+  private int id;
 
   @Column(nullable = false, unique = true)
   private String username;

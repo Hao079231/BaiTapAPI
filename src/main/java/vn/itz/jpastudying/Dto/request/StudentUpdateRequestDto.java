@@ -19,16 +19,4 @@ public class StudentUpdateRequestDto {
   @NotNull(message = "Birthday khong the null")
   @Past(message = "Ngay sinh phai la trong qua khu")
   private Date birthDate;
-
-//  public String getUserName() {
-//    return userName;
-//  }
-//
-//  public String getFullName() {
-//    return fullName;
-//  }
-//
-//  public Date getBirthDate() {
-//    return birthDate;
-//  }
 }

@@ -13,12 +13,4 @@ public class SubjectUpdateRequestDto {
   @NotNull(message = "Ma khoa hoc khong the null")
   @NotEmpty(message = "Ma khoa hoc khong the trong")
   private String subjectCode;
-
-//  public String getSubjectName() {
-//    return subjectName;
-//  }
-//
-//  public String getSubjectCode() {
-//    return subjectCode;
-//  }
 }
