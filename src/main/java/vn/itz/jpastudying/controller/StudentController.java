@@ -11,16 +11,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import vn.itz.jpastudying.Dto.ApiMessageDto;
-import vn.itz.jpastudying.Dto.StudentPagination;
+import vn.itz.jpastudying.Dto.ShowPagedResults;
 import vn.itz.jpastudying.Dto.request.StudentCreateRequestDto;
 import vn.itz.jpastudying.Dto.request.StudentUpdateRequestDto;
 import vn.itz.jpastudying.Dto.response.StudentResponseDto;
 import vn.itz.jpastudying.model.Student;
 import vn.itz.jpastudying.model.StudentCriteria;
-import vn.itz.jpastudying.model.Subject;
 import vn.itz.jpastudying.model.SubjectRegistration;
 import vn.itz.jpastudying.service.StudentDaoService;
 import vn.itz.jpastudying.utils.ApiResponeUtils;
@@ -105,11 +103,11 @@ public class StudentController {
   }
 
   @GetMapping("/student/pagination")
-  public ResponseEntity<ApiMessageDto<StudentPagination<StudentResponseDto>>> getAllStudents(
+  public ResponseEntity<ApiMessageDto<ShowPagedResults<StudentResponseDto>>> getPagedStudents(
       StudentCriteria studentCriteria, Pageable pageable) {
 
-    StudentPagination<StudentResponseDto> students = studentDaoService.getFilteredStudents(studentCriteria, pageable);
-    ApiMessageDto<StudentPagination<StudentResponseDto>> response = ApiResponeUtils.results("Danh sách sinh viên", students);
+    ShowPagedResults<StudentResponseDto> students = studentDaoService.getFilteredStudents(studentCriteria, pageable);
+    ApiMessageDto<ShowPagedResults<StudentResponseDto>> response = ApiResponeUtils.results("Danh sách sinh viên", students);
 
     return ResponseEntity.ok(response);
   }

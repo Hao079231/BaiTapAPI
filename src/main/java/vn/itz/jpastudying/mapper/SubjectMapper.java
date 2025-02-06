@@ -22,9 +22,9 @@ public interface SubjectMapper {
   SubjectResponseDto convertToSubjectResponse(Subject subject);
 
   @IterableMapping(elementTargetType = SubjectResponseDto.class)
-  List<SubjectResponseDto> convertToListStudentResponse(List<Subject> subjects);
+  List<SubjectResponseDto> convertToListSubjectResponse(List<Subject> subjects);
 
   @Mapping(source = "subjectName", target = "name")
   @Mapping(source = "subjectCode", target = "code")
-  void updateStudent(@MappingTarget Subject subject, SubjectUpdateRequestDto subjectDto);
+  void updateSubject(@MappingTarget Subject subject, SubjectUpdateRequestDto subjectDto);
 }

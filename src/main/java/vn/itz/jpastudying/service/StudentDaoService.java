@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import vn.itz.jpastudying.Dto.StudentPagination;
+import vn.itz.jpastudying.Dto.ShowPagedResults;
 import vn.itz.jpastudying.Dto.request.StudentCreateRequestDto;
 import vn.itz.jpastudying.Dto.request.StudentUpdateRequestDto;
 import vn.itz.jpastudying.Dto.response.StudentResponseDto;
@@ -147,11 +147,11 @@ public class StudentDaoService {
   }
 
   // Loc va phan trang cho sinh vien
-  public StudentPagination<StudentResponseDto> getFilteredStudents(StudentCriteria studentCriteria, Pageable pageable) {
+  public ShowPagedResults<StudentResponseDto> getFilteredStudents(StudentCriteria studentCriteria, Pageable pageable) {
     Page<Student> students = studentRepository.findAll(studentCriteria.getCriteria(), pageable);
 
     List<StudentResponseDto> studentDtos = studentMapper.convertToListStudentResponse(students.getContent());
 
-    return new StudentPagination<>(studentDtos, students.getTotalElements(), students.getTotalPages());
+    return new ShowPagedResults<>(studentDtos, students.getTotalElements(), students.getTotalPages());
   }
 }

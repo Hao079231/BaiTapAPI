@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class StudentPagination<T> {
+public class ShowPagedResults<T> {
 
   private List<T> content;
   private long totalElements;

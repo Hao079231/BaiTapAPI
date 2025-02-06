@@ -2,15 +2,20 @@ package vn.itz.jpastudying.service;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import vn.itz.jpastudying.Dto.ShowPagedResults;
 import vn.itz.jpastudying.Dto.request.SubjectCreateRequestDto;
 import vn.itz.jpastudying.Dto.request.SubjectUpdateRequestDto;
+import vn.itz.jpastudying.Dto.response.StudentResponseDto;
 import vn.itz.jpastudying.Dto.response.SubjectResponseDto;
 import vn.itz.jpastudying.exceptions.DuplicateEntityException;
 import vn.itz.jpastudying.exceptions.ResourceNotFound;
 import vn.itz.jpastudying.mapper.SubjectMapper;
 import vn.itz.jpastudying.model.Subject;
+import vn.itz.jpastudying.model.SubjectCriteria;
 import vn.itz.jpastudying.repository.SubjectRepository;
 
 @Service
@@ -23,7 +28,7 @@ public class SubjectDaoService {
 
   // Lay danh sach tat ca khoa hoc
   public List<SubjectResponseDto> getAllSubject() {
-    return subjectMapper.convertToListStudentResponse(subjectRepository.findAll());
+    return subjectMapper.convertToListSubjectResponse(subjectRepository.findAll());
   }
 
   // Lay thong tin khoa hoc bang id
@@ -57,8 +62,15 @@ public class SubjectDaoService {
       throw new DuplicateEntityException("Ten khoa hoc da ton tai");
     if (subjectRepository.existsByCode(newSubject.getSubjectCode()))
       throw new DuplicateEntityException("Ma khoa hoc da ton tai");
-    subjectMapper.updateStudent(oldSubject, newSubject);
+    subjectMapper.updateSubject(oldSubject, newSubject);
     return subjectMapper.convertToSubjectResponse(subjectRepository.save(oldSubject));
   }
 
+  public ShowPagedResults<SubjectResponseDto> getFilteredSubjects(SubjectCriteria subjectCriteria, Pageable pageable) {
+    Page<Subject> subjects = subjectRepository.findAll(subjectCriteria.getCriteria(), pageable);
+
+    List<SubjectResponseDto> subjectDtos = subjectMapper.convertToListSubjectResponse(subjects.getContent());
+
+    return new ShowPagedResults<>(subjectDtos, subjects.getTotalElements(), subjects.getTotalPages());
+  }
 }
