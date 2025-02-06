@@ -2,6 +2,7 @@ package vn.itz.jpastudying.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -82,11 +83,15 @@ public class StudentDaoService {
 //  }
 
   //Lay danh sach khoa hoc ma sinh vien dang ky - ManyToOne, OneToMany
-    public List<SubjectRegistration> getEnrolledSubjects(int studentId) {
+  public List<String> getEnrolledSubjects(int studentId) {
     Student student = studentRepository.findById(studentId).orElseThrow(() ->
         new ResourceNotFound("Khong tim thay sinh vien", HttpStatus.NOT_FOUND));
-    return student.getRegistrations();
+
+    return student.getRegistrations().stream()
+        .map(registration -> registration.getSubject().getName())
+        .collect(Collectors.toList());
   }
+
 
   // Dang ky mot khoa hoc cho mot sinh vien - ManyToMany
 //  public Student enrollSubject(int studentId, int subjectId){

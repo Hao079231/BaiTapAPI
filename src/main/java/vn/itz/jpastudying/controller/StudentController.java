@@ -80,11 +80,12 @@ public class StudentController {
 
   // Lay tat ca danh sach khoa hoc ma mot sinh vien dang ky - ManyToOne, OneToMany
   @GetMapping("/student/{student_id}/subjects")
-  public ResponseEntity<ApiMessageDto<List<SubjectRegistration>>> getEnrolledSubjects(@PathVariable int student_id){
-    ApiMessageDto<List<SubjectRegistration>> response = ApiResponeUtils.results("Danh sach khoa hoc ma sinh vien dang ky",
-        studentDaoService.getEnrolledSubjects(student_id));
+  public ResponseEntity<ApiMessageDto<List<String>>> getEnrolledSubjects(@PathVariable int student_id) {
+    List<String> subjectIds = studentDaoService.getEnrolledSubjects(student_id);
+    ApiMessageDto<List<String>> response = ApiResponeUtils.results("Danh sách môn học sinh viên đã đăng ký", subjectIds);
     return ResponseEntity.ok(response);
   }
+
 
   // Dang ky khoa hoc cho sinh vien
   @PostMapping("/student/{student_id}/subject/{subject_id}")
