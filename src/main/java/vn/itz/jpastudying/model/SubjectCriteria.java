@@ -11,7 +11,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 @Data
 public class SubjectCriteria {
-  private Integer id;
+  private Long id;
   private String code;
   private String name;
   private Integer sortId;
