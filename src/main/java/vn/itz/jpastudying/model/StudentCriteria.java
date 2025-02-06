@@ -35,9 +35,9 @@ public class StudentCriteria {
         }
         if (sortId != null) {
           if (sortId == 1) {
-            criteriaQuery.orderBy(criteriaBuilder.asc(root.get("createdAt")));
+            criteriaQuery.orderBy(criteriaBuilder.asc(root.get("id")));
           } else {
-            criteriaQuery.orderBy(criteriaBuilder.desc(root.get("createdAt")));
+            criteriaQuery.orderBy(criteriaBuilder.desc(root.get("id")));
           }
         }
         return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
