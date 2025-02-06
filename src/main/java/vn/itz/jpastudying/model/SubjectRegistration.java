@@ -25,7 +25,7 @@ import lombok.Setter;
 public class SubjectRegistration {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private int registration_id;
+  private int id;
 
   @ManyToOne
   @JoinColumn(name = "student_id")
