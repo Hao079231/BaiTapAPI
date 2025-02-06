@@ -75,13 +75,6 @@ public class StudentDaoService {
     return studentMapper.convertToStudentResponse(studentRepository.save(oldStudent));
   }
 
-  //Lay danh sach khoa hoc ma sinh vien dang ky - ManyToMany
-//  public List<Subject> getEnrolledSubjects(int studentId) {
-//    Student student = studentRepository.findById(studentId).orElseThrow(() ->
-//        new ResourceNotFound("Khong tim thay sinh vien", HttpStatus.NOT_FOUND));
-//    return student.getSubjects();
-//  }
-
   //Lay danh sach khoa hoc ma sinh vien dang ky - ManyToOne, OneToMany
   public List<String> getEnrolledSubjects(int studentId) {
     Student student = studentRepository.findById(studentId).orElseThrow(() ->
@@ -91,21 +84,6 @@ public class StudentDaoService {
         .map(registration -> registration.getSubject().getName())
         .collect(Collectors.toList());
   }
-
-
-  // Dang ky mot khoa hoc cho mot sinh vien - ManyToMany
-//  public Student enrollSubject(int studentId, int subjectId){
-//    Student student = studentRepository.findById(studentId)
-//        .orElseThrow(() -> new ResourceNotFound("Sinh vien khong ton tai", HttpStatus.NOT_FOUND));
-//    Subject subject = subjectRepository.findById(subjectId)
-//        .orElseThrow(() -> new ResourceNotFound("Khoa hoc khong ton tai", HttpStatus.NOT_FOUND));
-//
-//    if (!student.getSubjects().contains(subject)) {
-//      student.getSubjects().add(subject);
-//      studentRepository.save(student);
-//    }
-//    return student;
-//  }
 
   // Dang ky mot khoa hoc cho mot sinh vien - ManyToOne, OneToMany
   public Student enrollSubject(int studentId, int subjectId){
@@ -125,23 +103,8 @@ public class StudentDaoService {
     registration.setDateRegister(new Date());
     registration.setStatus(SubjectRegistration.Status.PENDING);
     subjectRegistrationRepository.save(registration);
-
     return student;
   }
-
-  // Xoa mot khoa hoc da dang ky - ManyToMany
-//  public Student removeSubject(int studentId, int subjectId) {
-//    Student student = studentRepository.findById(studentId)
-//        .orElseThrow(() -> new ResourceNotFound("Sinh vien khong ton tai", HttpStatus.NOT_FOUND));
-//    Subject subject = subjectRepository.findById(subjectId)
-//        .orElseThrow(() -> new ResourceNotFound("Khoa hoc khong ton tai", HttpStatus.NOT_FOUND));
-//
-//    if (student.getSubjects().contains(subject)) {
-//      student.getSubjects().remove(subject);
-//      studentRepository.save(student);
-//    }
-//    return student;
-//  }
 
   // Xoa mot khoa hoc da dang ky - ManyToOne, OneToMany
   @Transactional

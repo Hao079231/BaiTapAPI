@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import vn.itz.jpastudying.Dto.ShowPagedResults;
 import vn.itz.jpastudying.Dto.request.SubjectCreateRequestDto;
 import vn.itz.jpastudying.Dto.request.SubjectUpdateRequestDto;
-import vn.itz.jpastudying.Dto.response.StudentResponseDto;
 import vn.itz.jpastudying.Dto.response.SubjectResponseDto;
 import vn.itz.jpastudying.exceptions.DuplicateEntityException;
 import vn.itz.jpastudying.exceptions.ResourceNotFound;

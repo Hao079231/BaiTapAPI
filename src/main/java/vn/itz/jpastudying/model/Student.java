@@ -45,14 +45,6 @@ public class Student {
   @Column(nullable = false)
   private String password;
 
-//  @ManyToMany(fetch = FetchType.LAZY)
-//  @JoinTable(
-//      name = "student_subject",
-//      joinColumns = @JoinColumn(name = "student_id"),
-//      inverseJoinColumns = @JoinColumn(name = "subject_id")
-//  )
-//  private List<Subject> subjects = new ArrayList<>();
-
   @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
   @JsonManagedReference
   private List<SubjectRegistration> registrations = new ArrayList<>();

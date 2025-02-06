@@ -70,6 +70,7 @@ public class SubjectController {
     return ResponseEntity.ok(response);
   }
 
+  // Loc va phan trang khoa hoc
   @GetMapping("/subject/pagination")
   public ResponseEntity<ApiMessageDto<ShowPagedResults<SubjectResponseDto>>> getPagedSubjects(
       SubjectCriteria subjectCriteria, Pageable pageable) {

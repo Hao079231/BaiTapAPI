@@ -70,14 +70,6 @@ public class StudentController {
     return ResponseEntity.ok(response);
   }
 
-  // Lay tat ca danh sach khoa hoc ma mot sinh vien dang ky - ManyToMany
-//  @GetMapping("/student/{student_id}/subjects")
-//  public ResponseEntity<ApiMessageDto<List<Subject>>> getEnrolledSubjects(@PathVariable int student_id){
-//    ApiMessageDto<List<Subject>> response = ApiResponeUtils.results("Danh sach khoa hoc ma sinh vien dang ky",
-//        studentDaoService.getEnrolledSubjects(student_id));
-//    return ResponseEntity.ok(response);
-//  }
-
   // Lay tat ca danh sach khoa hoc ma mot sinh vien dang ky - ManyToOne, OneToMany
   @GetMapping("/student/{student_id}/subjects")
   public ResponseEntity<ApiMessageDto<List<String>>> getEnrolledSubjects(@PathVariable int student_id) {
@@ -103,6 +95,7 @@ public class StudentController {
     return ResponseEntity.ok(respone);
   }
 
+  // Loc va phan trang sinh vien
   @GetMapping("/student/pagination")
   public ResponseEntity<ApiMessageDto<ShowPagedResults<StudentResponseDto>>> getPagedStudents(
       StudentCriteria studentCriteria, Pageable pageable) {
