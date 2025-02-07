@@ -17,9 +17,11 @@ import vn.itz.jpastudying.Dto.ShowPagedResults;
 import vn.itz.jpastudying.Dto.request.StudentCreateRequestDto;
 import vn.itz.jpastudying.Dto.request.StudentUpdateRequestDto;
 import vn.itz.jpastudying.Dto.response.StudentResponseDto;
+import vn.itz.jpastudying.Dto.response.SubjectRegistrationResponse;
 import vn.itz.jpastudying.model.Student;
 import vn.itz.jpastudying.model.StudentCriteria;
 import vn.itz.jpastudying.model.SubjectRegistration;
+import vn.itz.jpastudying.model.SubjectRegistrationCriteria;
 import vn.itz.jpastudying.service.StudentDaoService;
 import vn.itz.jpastudying.utils.ApiResponeUtils;
 
@@ -105,4 +107,19 @@ public class StudentController {
 
     return ResponseEntity.ok(response);
   }
+
+  // Loc va phan trang danh sach mon hoc ma mot sinh vien da dang ky
+  @GetMapping("/student/{studentId}/subjects/pagination")
+  public ResponseEntity<ApiMessageDto<ShowPagedResults<String>>> getPagedSubjects(
+      @PathVariable int studentId, Pageable pageable) {
+
+    SubjectRegistrationCriteria criteria = new SubjectRegistrationCriteria();
+    criteria.setStudentId(studentId);
+
+    ShowPagedResults<String> subjects = studentDaoService.getFilteredSubjects(criteria, pageable);
+    ApiMessageDto<ShowPagedResults<String>> response = ApiResponeUtils.results("Danh sach mon hoc ma sinh vien da dang ky", subjects);
+
+    return ResponseEntity.ok(response);
+  }
+
 }

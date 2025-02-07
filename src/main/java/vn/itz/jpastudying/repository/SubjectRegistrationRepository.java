@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import vn.itz.jpastudying.model.SubjectRegistration;
 
-public interface SubjectRegistrationRepository extends JpaRepository<SubjectRegistration, Integer> {
+public interface SubjectRegistrationRepository extends JpaRepository<SubjectRegistration, Integer>, JpaSpecificationExecutor<SubjectRegistration> {
   @Transactional
   @Modifying
   @Query("DELETE FROM SubjectRegistration sr WHERE sr.student.id = :studentId AND sr.subject.id = :subjectId")
