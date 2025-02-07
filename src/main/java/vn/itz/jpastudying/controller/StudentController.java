@@ -76,15 +76,14 @@ public class StudentController {
   @GetMapping("/student/{student_id}/subjects")
   public ResponseEntity<ApiMessageDto<List<String>>> getEnrolledSubjects(@PathVariable int student_id) {
     List<String> subjectIds = studentDaoService.getEnrolledSubjects(student_id);
-    ApiMessageDto<List<String>> response = ApiResponeUtils.results("Danh sách môn học sinh viên đã đăng ký", subjectIds);
+    ApiMessageDto<List<String>> response = ApiResponeUtils.results("Danh sach mon hoc ma sinh vien da dang ky", subjectIds);
     return ResponseEntity.ok(response);
   }
 
-
   // Dang ky khoa hoc cho sinh vien
   @PostMapping("/student/{student_id}/subject/{subject_id}")
-  public ResponseEntity<ApiMessageDto<Student>> enrollSubject(@PathVariable int student_id, @PathVariable int subject_id){
-    ApiMessageDto<Student> respone = ApiResponeUtils.results("Dang ky khoa hoc thanh cong",
+  public ResponseEntity<ApiMessageDto<String>> enrollSubject(@PathVariable int student_id, @PathVariable int subject_id){
+    ApiMessageDto<String> respone = ApiResponeUtils.results("Dang ky khoa hoc thanh cong",
         studentDaoService.enrollSubject(student_id, subject_id));
     return ResponseEntity.ok(respone);
   }

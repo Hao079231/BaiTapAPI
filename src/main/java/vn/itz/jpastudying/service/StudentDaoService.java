@@ -86,13 +86,11 @@ public class StudentDaoService {
     Student student = studentRepository.findById(studentId).orElseThrow(() ->
         new ResourceNotFound("Khong tim thay sinh vien", HttpStatus.NOT_FOUND));
 
-    return student.getRegistrations().stream()
-        .map(registration -> registration.getSubject().getName())
-        .collect(Collectors.toList());
+    return subjectRegistrationMapper.convertToListSubjectNames(student.getRegistrations());
   }
 
   // Dang ky mot khoa hoc cho mot sinh vien - ManyToOne, OneToMany
-  public Student enrollSubject(int studentId, int subjectId){
+  public String enrollSubject(int studentId, int subjectId) {
     Student student = studentRepository.findById(studentId)
         .orElseThrow(() -> new ResourceNotFound("Sinh viên không tồn tại", HttpStatus.NOT_FOUND));
 
@@ -108,9 +106,12 @@ public class StudentDaoService {
     registration.setSubject(subject);
     registration.setDateRegister(new Date());
     registration.setStatus(SubjectRegistration.Status.PENDING);
+
     subjectRegistrationRepository.save(registration);
-    return student;
+
+    return subjectRegistrationMapper.mapToSubjectName(registration);
   }
+
 
   // Xoa mot khoa hoc da dang ky - ManyToOne, OneToMany
   @Transactional
