@@ -1,4 +1,4 @@
-package vn.itz.jpastudying.model;
+package vn.itz.jpastudying.model.criteria;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +8,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import lombok.Data;
 import org.springframework.data.jpa.domain.Specification;
+import vn.itz.jpastudying.model.Subject;
 
 @Data
 public class SubjectCriteria {
