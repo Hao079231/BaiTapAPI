@@ -3,7 +3,6 @@ package vn.itz.jpastudying.Dto.response;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,4 +18,5 @@ public class StudentResponseDto {
   private String fullName;
   private Date birthDate;
   private String passWord;
+  private String genDer;
 }

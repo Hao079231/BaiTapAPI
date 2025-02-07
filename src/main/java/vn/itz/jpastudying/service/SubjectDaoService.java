@@ -1,9 +1,11 @@
 package vn.itz.jpastudying.service;
 
+import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import vn.itz.jpastudying.Dto.ShowPagedResults;
@@ -14,7 +16,8 @@ import vn.itz.jpastudying.exceptions.DuplicateEntityException;
 import vn.itz.jpastudying.exceptions.ResourceNotFound;
 import vn.itz.jpastudying.mapper.SubjectMapper;
 import vn.itz.jpastudying.model.Subject;
-import vn.itz.jpastudying.model.SubjectCriteria;
+import vn.itz.jpastudying.model.criteria.SubjectCriteria;
+import vn.itz.jpastudying.model.criteria.SubjectRegistrationCriteria;
 import vn.itz.jpastudying.repository.SubjectRepository;
 
 @Service
@@ -56,7 +59,7 @@ public class SubjectDaoService {
   // Cap nhat thong tin khoa hoc
   public SubjectResponseDto updateSubject(int id, SubjectUpdateRequestDto newSubject) {
     Subject oldSubject = subjectRepository.findById(id).orElseThrow(()
-    -> new ResourceNotFound("Khong tim thay khoa hoc", HttpStatus.NOT_FOUND));
+        -> new ResourceNotFound("Khong tim thay khoa hoc", HttpStatus.NOT_FOUND));
     if (subjectRepository.existsByName(newSubject.getSubjectName()))
       throw new DuplicateEntityException("Ten khoa hoc da ton tai");
     if (subjectRepository.existsByCode(newSubject.getSubjectCode()))
@@ -72,4 +75,18 @@ public class SubjectDaoService {
 
     return new ShowPagedResults<>(subjectDtos, subjects.getTotalElements(), subjects.getTotalPages());
   }
+
+  // Lay danh sach cac khoa hoc dua id sinh vien va ngay nhap vao
+  public ShowPagedResults<SubjectResponseDto> getSubjectsByCriteria(SubjectRegistrationCriteria criteria, Pageable pageable) {
+    Specification<Subject> spec = SubjectRegistrationCriteria.getSubjectsByStudentCriteria(
+        criteria.getStudentId(),
+        criteria.getRegisteredAfter()
+    );
+
+    Page<Subject> subjects = subjectRepository.findAll(spec, pageable);
+    List<SubjectResponseDto> subjectDtos = subjectMapper.convertToListSubjectResponse(subjects.getContent());
+
+    return new ShowPagedResults<>(subjectDtos, subjects.getTotalElements(), subjects.getTotalPages());
+  }
+
 }

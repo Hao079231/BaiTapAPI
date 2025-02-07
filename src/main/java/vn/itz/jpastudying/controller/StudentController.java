@@ -1,6 +1,7 @@
 package vn.itz.jpastudying.controller;
 
 import java.util.List;
+import java.util.Set;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -17,11 +18,10 @@ import vn.itz.jpastudying.Dto.ShowPagedResults;
 import vn.itz.jpastudying.Dto.request.StudentCreateRequestDto;
 import vn.itz.jpastudying.Dto.request.StudentUpdateRequestDto;
 import vn.itz.jpastudying.Dto.response.StudentResponseDto;
-import vn.itz.jpastudying.Dto.response.SubjectRegistrationResponse;
+import vn.itz.jpastudying.Dto.response.SubjectResponseDto;
 import vn.itz.jpastudying.model.Student;
-import vn.itz.jpastudying.model.StudentCriteria;
-import vn.itz.jpastudying.model.SubjectRegistration;
-import vn.itz.jpastudying.model.SubjectRegistrationCriteria;
+import vn.itz.jpastudying.model.criteria.StudentCriteria;
+import vn.itz.jpastudying.model.criteria.SubjectRegistrationCriteria;
 import vn.itz.jpastudying.service.StudentDaoService;
 import vn.itz.jpastudying.utils.ApiResponeUtils;
 
@@ -30,15 +30,7 @@ public class StudentController {
   @Autowired
   private StudentDaoService studentDaoService;
 
-  // Lay tat ca du lieu trong bang sinh vien
-  @GetMapping("/students")
-  public ResponseEntity<ApiMessageDto<List<StudentResponseDto>>> getAllStudents(){
-    ApiMessageDto<List<StudentResponseDto>> respone = ApiResponeUtils.results("Danh sach sinh vien",
-        studentDaoService.findAllStudents());
-    return ResponseEntity.ok(respone);
-  }
-
-//   Lay ra du lieu cua mot sinh vien
+  //   Lay ra du lieu cua mot sinh vien
   @GetMapping("/student/{id}")
   public ResponseEntity<ApiMessageDto<StudentResponseDto>> getStudentById(@PathVariable int id) {
 
@@ -102,23 +94,19 @@ public class StudentController {
       StudentCriteria studentCriteria, Pageable pageable) {
 
     ShowPagedResults<StudentResponseDto> students = studentDaoService.getFilteredStudents(studentCriteria, pageable);
-    ApiMessageDto<ShowPagedResults<StudentResponseDto>> response = ApiResponeUtils.results("Danh sách sinh viên", students);
+    ApiMessageDto<ShowPagedResults<StudentResponseDto>> response = ApiResponeUtils.results("Danh sach sinh vien", students);
 
     return ResponseEntity.ok(response);
   }
 
-  // Loc va phan trang danh sach mon hoc ma mot sinh vien da dang ky
-  @GetMapping("/student/{studentId}/subjects/pagination")
-  public ResponseEntity<ApiMessageDto<ShowPagedResults<String>>> getPagedSubjects(
-      @PathVariable int studentId, Pageable pageable) {
+  // Loc va phan trang danh sach sinh vien tu id khoa hoc va ngay nhap vao
+  @GetMapping("/student/list-by-subject-and-date")
+  public ResponseEntity<ApiMessageDto<ShowPagedResults<StudentResponseDto>>> getSubjectsByStudentIdAndDate(
+      SubjectRegistrationCriteria criteria, Pageable pageable) {
 
-    SubjectRegistrationCriteria criteria = new SubjectRegistrationCriteria();
-    criteria.setStudentId(studentId);
-
-    ShowPagedResults<String> subjects = studentDaoService.getFilteredSubjects(criteria, pageable);
-    ApiMessageDto<ShowPagedResults<String>> response = ApiResponeUtils.results("Danh sach mon hoc ma sinh vien da dang ky", subjects);
+    ShowPagedResults<StudentResponseDto> subjects = studentDaoService.getStudentsByCriteria(criteria, pageable);
+    ApiMessageDto<ShowPagedResults<StudentResponseDto>> response = ApiResponeUtils.results("Danh sach sinh vien da dang ky khoa hoc", subjects);
 
     return ResponseEntity.ok(response);
   }
-
 }

@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
-@Data
 @JsonInclude(Include.NON_NULL)
 @Getter
 @Setter
