@@ -3,6 +3,7 @@ package vn.itz.jpastudying.controller;
 import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,11 +17,10 @@ import vn.itz.jpastudying.Dto.ApiMessageDto;
 import vn.itz.jpastudying.Dto.ShowPagedResults;
 import vn.itz.jpastudying.Dto.request.SubjectCreateRequestDto;
 import vn.itz.jpastudying.Dto.request.SubjectUpdateRequestDto;
-import vn.itz.jpastudying.Dto.response.StudentResponseDto;
 import vn.itz.jpastudying.Dto.response.SubjectResponseDto;
-import vn.itz.jpastudying.model.StudentCriteria;
 import vn.itz.jpastudying.model.Subject;
-import vn.itz.jpastudying.model.SubjectCriteria;
+import vn.itz.jpastudying.model.criteria.SubjectCriteria;
+import vn.itz.jpastudying.model.criteria.SubjectRegistrationCriteria;
 import vn.itz.jpastudying.service.SubjectDaoService;
 import vn.itz.jpastudying.utils.ApiResponeUtils;
 
@@ -80,5 +80,17 @@ public class SubjectController {
 
     return ResponseEntity.ok(response);
   }
+
+  // Loc va phan trang danh sach khoa hoc tu id sinh vien va ngay nhap vao
+  @GetMapping("/subject/list-by-student-and-date")
+  public ResponseEntity<ApiMessageDto<ShowPagedResults<SubjectResponseDto>>> getSubjectsByStudentIdAndDate(
+      SubjectRegistrationCriteria criteria, Pageable pageable) {
+
+    ShowPagedResults<SubjectResponseDto> subjects = subjectDaoService.getSubjectsByCriteria(criteria, pageable);
+    ApiMessageDto<ShowPagedResults<SubjectResponseDto>> response = ApiResponeUtils.results("Danh sach khoa hoc duoc mot sinh vien dang ky", subjects);
+
+    return ResponseEntity.ok(response);
+  }
+
 
 }
