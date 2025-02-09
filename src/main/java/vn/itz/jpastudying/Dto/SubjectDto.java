@@ -1,4 +1,4 @@
-package vn.itz.jpastudying.Dto.response;
+package vn.itz.jpastudying.Dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SubjectResponseDto {
+public class SubjectDto {
   private int subjectIdValue;
   private String subjectNameValue;
   private String subjectCodeValue;

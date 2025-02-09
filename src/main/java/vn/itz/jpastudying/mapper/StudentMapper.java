@@ -9,7 +9,7 @@ import org.mapstruct.Mappings;
 import org.mapstruct.Named;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
-import vn.itz.jpastudying.Dto.response.StudentResponseDto;
+import vn.itz.jpastudying.Dto.StudentDto;
 import vn.itz.jpastudying.form.student.StudentCreateForm;
 import vn.itz.jpastudying.form.student.StudentUpdateForm;
 import vn.itz.jpastudying.model.Student;
@@ -35,10 +35,10 @@ public interface StudentMapper {
 
   })
   @Named("mapStudentDto")
-  StudentResponseDto convertToStudentResponse(Student student);
+  StudentDto convertToStudentResponse(Student student);
 
-  @IterableMapping(elementTargetType = StudentResponseDto.class, qualifiedByName = "mapStudentDto")
-  List<StudentResponseDto> convertToListStudentResponse(List<Student> students);
+  @IterableMapping(elementTargetType = StudentDto.class, qualifiedByName = "mapStudentDto")
+  List<StudentDto> convertToListStudentResponse(List<Student> students);
 
   @Mappings({
       @Mapping(source = "userNameValue", target = "username"),

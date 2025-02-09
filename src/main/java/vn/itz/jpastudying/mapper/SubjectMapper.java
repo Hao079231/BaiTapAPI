@@ -7,7 +7,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.Named;
-import vn.itz.jpastudying.Dto.response.SubjectResponseDto;
+import vn.itz.jpastudying.Dto.SubjectDto;
 import vn.itz.jpastudying.form.subject.SubjectCreateForm;
 import vn.itz.jpastudying.form.subject.SubjectUpdateForm;
 import vn.itz.jpastudying.model.Subject;
@@ -29,10 +29,10 @@ public interface SubjectMapper {
 
   })
   @Named("mapSubjectDto")
-  SubjectResponseDto convertToSubjectResponse(Subject subject);
+  SubjectDto convertToSubjectResponse(Subject subject);
 
-  @IterableMapping(elementTargetType = SubjectResponseDto.class, qualifiedByName = "mapSubjectDto")
-  List<SubjectResponseDto> convertToListSubjectResponse(List<Subject> subjects);
+  @IterableMapping(elementTargetType = SubjectDto.class, qualifiedByName = "mapSubjectDto")
+  List<SubjectDto> convertToListSubjectResponse(List<Subject> subjects);
 
   @Mappings({
       @Mapping(source = "subjectNameValue", target = "name"),

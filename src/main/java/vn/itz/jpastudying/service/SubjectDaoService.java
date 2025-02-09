@@ -8,8 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import vn.itz.jpastudying.Dto.ShowPagedResults;
-import vn.itz.jpastudying.Dto.response.SubjectRegistrationResponse;
-import vn.itz.jpastudying.Dto.response.SubjectResponseDto;
+import vn.itz.jpastudying.Dto.SubjectRegistrationDto;
+import vn.itz.jpastudying.Dto.SubjectDto;
 import vn.itz.jpastudying.exceptions.DuplicateEntityException;
 import vn.itz.jpastudying.exceptions.ResourceNotFound;
 import vn.itz.jpastudying.form.subject.SubjectCreateForm;
@@ -39,18 +39,18 @@ public class SubjectDaoService {
   private SubjectRegistrationMapper subjectRegistrationMapper;
 
   // Lay danh sach tat ca khoa hoc
-  public List<SubjectResponseDto> getAllSubject() {
+  public List<SubjectDto> getAllSubject() {
     return subjectMapper.convertToListSubjectResponse(subjectRepository.findAll());
   }
 
   // Lay thong tin khoa hoc bang id
-  public SubjectResponseDto findSubjectById(int id) {
+  public SubjectDto findSubjectById(int id) {
     return subjectMapper.convertToSubjectResponse(subjectRepository.findById(id).orElseThrow(()->
         new ResourceNotFound("Khoa hoc nay khong ton tai", HttpStatus.NOT_FOUND)));
   }
 
   // Them du lieu khoa hoc
-  public SubjectResponseDto createSubject(SubjectCreateForm subject) {
+  public SubjectDto createSubject(SubjectCreateForm subject) {
     if (subjectRepository.existsByName(subject.getSubjectNameValue()))
       throw new DuplicateEntityException("Ten khoa hoc da ton tai");
     if (subjectRepository.existsByCode(subject.getSubjectCodeValue()))
@@ -67,7 +67,7 @@ public class SubjectDaoService {
   }
 
   // Cap nhat thong tin khoa hoc
-  public SubjectResponseDto updateSubject(int id, SubjectUpdateForm newSubject) {
+  public SubjectDto updateSubject(int id, SubjectUpdateForm newSubject) {
     Subject oldSubject = subjectRepository.findById(id).orElseThrow(()
     -> new ResourceNotFound("Khong tim thay khoa hoc", HttpStatus.NOT_FOUND));
     if (subjectRepository.existsByName(newSubject.getSubjectNameValue()))
@@ -78,21 +78,21 @@ public class SubjectDaoService {
     return subjectMapper.convertToSubjectResponse(subjectRepository.save(oldSubject));
   }
 
-  public ShowPagedResults<SubjectResponseDto> getFilteredSubjects(SubjectCriteria subjectCriteria, Pageable pageable) {
+  public ShowPagedResults<SubjectDto> getFilteredSubjects(SubjectCriteria subjectCriteria, Pageable pageable) {
     Page<Subject> subjects = subjectRepository.findAll(subjectCriteria.getCriteria(), pageable);
 
-    List<SubjectResponseDto> subjectDtos = subjectMapper.convertToListSubjectResponse(subjects.getContent());
+    List<SubjectDto> subjectDtos = subjectMapper.convertToListSubjectResponse(subjects.getContent());
 
     return new ShowPagedResults<>(subjectDtos, subjects.getTotalElements(), subjects.getTotalPages());
   }
 
   // Lay danh sach cac khoa hoc dua id sinh vien va ngay nhap vao
-  public ShowPagedResults<SubjectRegistrationResponse> getSubjectsByCriteria(SubjectRegistrationCriteria criteria, Pageable pageable) {
+  public ShowPagedResults<SubjectRegistrationDto> getSubjectsByCriteria(SubjectRegistrationCriteria criteria, Pageable pageable) {
 
     Page<SubjectRegistration> subjectPage = subjectRegistrationRepository.findAll(
         criteria.getSubjectsByStudentCriteria(), pageable);
 
-    List<SubjectRegistrationResponse> studentListDtos = subjectRegistrationMapper
+    List<SubjectRegistrationDto> studentListDtos = subjectRegistrationMapper
         .convertToListSubjectRegistrationResponse(subjectPage.getContent());
 
     return new ShowPagedResults<>(studentListDtos, subjectPage.getTotalElements(), subjectPage.getTotalPages());

@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import vn.itz.jpastudying.Dto.ApiMessageDto;
 import vn.itz.jpastudying.Dto.ShowPagedResults;
-import vn.itz.jpastudying.Dto.response.StudentResponseDto;
-import vn.itz.jpastudying.Dto.response.SubjectRegistrationResponse;
+import vn.itz.jpastudying.Dto.StudentDto;
+import vn.itz.jpastudying.Dto.SubjectRegistrationDto;
 import vn.itz.jpastudying.form.student.StudentCreateForm;
 import vn.itz.jpastudying.form.student.StudentUpdateForm;
 import vn.itz.jpastudying.model.Student;
@@ -35,17 +35,17 @@ public class StudentController {
 
 //   Lay ra du lieu cua mot sinh vien
   @GetMapping("/{id}")
-  public ResponseEntity<ApiMessageDto<StudentResponseDto>> getStudentById(@PathVariable int id) {
+  public ResponseEntity<ApiMessageDto<StudentDto>> getStudentById(@PathVariable int id) {
 
-    ApiMessageDto<StudentResponseDto> response = ApiResponeUtils.results("Thong tin sinh vien",
+    ApiMessageDto<StudentDto> response = ApiResponeUtils.results("Thong tin sinh vien",
         studentDaoService.findStudentById(id));
     return ResponseEntity.ok(response);
   }
 
   // Them mot sinh vien vao bang
   @PostMapping("/create")
-  public ResponseEntity<ApiMessageDto<StudentResponseDto>> createStudent(@Valid @RequestBody StudentCreateForm student) {
-    ApiMessageDto<StudentResponseDto> response = ApiResponeUtils.results("Them du lieu sinh vien thanh cong",
+  public ResponseEntity<ApiMessageDto<StudentDto>> createStudent(@Valid @RequestBody StudentCreateForm student) {
+    ApiMessageDto<StudentDto> response = ApiResponeUtils.results("Them du lieu sinh vien thanh cong",
         studentDaoService.createStudent(student));
     return ResponseEntity.ok(response);
   }
@@ -61,8 +61,8 @@ public class StudentController {
 
   // Cap nhat du lieu sinh vien trong bang
   @PutMapping("/update/{id}")
-  public ResponseEntity<ApiMessageDto<StudentResponseDto>> updateStudent(@PathVariable int id, @Valid @RequestBody StudentUpdateForm student) {
-    ApiMessageDto<StudentResponseDto> response = ApiResponeUtils.results("Cap nhat du lieu sinh vien thanh cong",
+  public ResponseEntity<ApiMessageDto<StudentDto>> updateStudent(@PathVariable int id, @Valid @RequestBody StudentUpdateForm student) {
+    ApiMessageDto<StudentDto> response = ApiResponeUtils.results("Cap nhat du lieu sinh vien thanh cong",
         studentDaoService.updateStudent(id, student));
     return ResponseEntity.ok(response);
   }
@@ -93,22 +93,22 @@ public class StudentController {
 
   // Loc va phan trang sinh vien
   @GetMapping("/pagination")
-  public ResponseEntity<ApiMessageDto<ShowPagedResults<StudentResponseDto>>> getPagedStudents(
+  public ResponseEntity<ApiMessageDto<ShowPagedResults<StudentDto>>> getPagedStudents(
       StudentCriteria studentCriteria, Pageable pageable) {
 
-    ShowPagedResults<StudentResponseDto> students = studentDaoService.getFilteredStudents(studentCriteria, pageable);
-    ApiMessageDto<ShowPagedResults<StudentResponseDto>> response = ApiResponeUtils.results("Danh sach sinh vien", students);
+    ShowPagedResults<StudentDto> students = studentDaoService.getFilteredStudents(studentCriteria, pageable);
+    ApiMessageDto<ShowPagedResults<StudentDto>> response = ApiResponeUtils.results("Danh sach sinh vien", students);
 
     return ResponseEntity.ok(response);
   }
 
   // Loc va phan trang danh sach sinh vien tu id khoa hoc va ngay nhap vao
   @GetMapping("/list-by-subject-and-date")
-  public ResponseEntity<ApiMessageDto<ShowPagedResults<SubjectRegistrationResponse>>> getStudentsBySubjectIdAndDate(
+  public ResponseEntity<ApiMessageDto<ShowPagedResults<SubjectRegistrationDto>>> getStudentsBySubjectIdAndDate(
       SubjectRegistrationCriteria criteria, Pageable pageable) {
 
-    ShowPagedResults<SubjectRegistrationResponse> students = studentDaoService.getStudentsByCriteria(criteria, pageable);
-    ApiMessageDto<ShowPagedResults<SubjectRegistrationResponse>> response = ApiResponeUtils.results(
+    ShowPagedResults<SubjectRegistrationDto> students = studentDaoService.getStudentsByCriteria(criteria, pageable);
+    ApiMessageDto<ShowPagedResults<SubjectRegistrationDto>> response = ApiResponeUtils.results(
         "Danh sach sinh vien da dang ky khoa hoc", students);
 
     return ResponseEntity.ok(response);
@@ -116,13 +116,13 @@ public class StudentController {
 
   // Cap nhat trang thai sinh vien trong khoa hoc dang ky
   @PutMapping("/{studentId}/subject-registration/{subjectId}/status")
-  public ResponseEntity<ApiMessageDto<SubjectRegistrationResponse>> updateRegistrationStatus(
+  public ResponseEntity<ApiMessageDto<SubjectRegistrationDto>> updateRegistrationStatus(
       @PathVariable int studentId,
       @PathVariable int subjectId,
       @RequestParam("statusResponse") Status statusResponse) {
 
-    SubjectRegistrationResponse updatedStatus = studentDaoService.updateSubjectRegistrationStatus(studentId, subjectId, statusResponse);
-    ApiMessageDto<SubjectRegistrationResponse> response = ApiResponeUtils.results(
+    SubjectRegistrationDto updatedStatus = studentDaoService.updateSubjectRegistrationStatus(studentId, subjectId, statusResponse);
+    ApiMessageDto<SubjectRegistrationDto> response = ApiResponeUtils.results(
         "Cap nhat trang thai sinh vien trong khoa hoc thanh cong", updatedStatus);
 
     return ResponseEntity.ok(response);

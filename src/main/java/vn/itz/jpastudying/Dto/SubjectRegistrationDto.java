@@ -1,4 +1,4 @@
-package vn.itz.jpastudying.Dto.response;
+package vn.itz.jpastudying.Dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,10 +11,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SubjectRegistrationResponse {
+public class SubjectRegistrationDto {
   private Long idResponse;
-  private StudentResponseDto studentResponse;
-  private SubjectResponseDto subjectResponse;
+  private StudentDto studentResponse;
+  private SubjectDto subjectResponse;
   private String dateRegisterResponse;
   private String statusResponse;
 }

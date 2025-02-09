@@ -1,4 +1,4 @@
-package vn.itz.jpastudying.Dto.response;
+package vn.itz.jpastudying.Dto;
 
 import java.util.Date;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class StudentResponseDto {
+public class StudentDto {
   private int studentIdValue;
   private String userNameValue;
   private String fullNameValue;

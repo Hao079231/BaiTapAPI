@@ -9,8 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import vn.itz.jpastudying.Dto.ShowPagedResults;
-import vn.itz.jpastudying.Dto.response.StudentResponseDto;
-import vn.itz.jpastudying.Dto.response.SubjectRegistrationResponse;
+import vn.itz.jpastudying.Dto.StudentDto;
+import vn.itz.jpastudying.Dto.SubjectRegistrationDto;
 import vn.itz.jpastudying.exceptions.DuplicateEntityException;
 import vn.itz.jpastudying.exceptions.ResourceNotFound;
 import vn.itz.jpastudying.form.student.StudentCreateForm;
@@ -44,13 +44,13 @@ public class StudentDaoService {
   private SubjectRegistrationMapper subjectRegistrationMapper;
 
   // Lay mot sinh vien bat ky trong bang sinh vien
-  public StudentResponseDto findStudentById(int id) {
+  public StudentDto findStudentById(int id) {
     return studentMapper.convertToStudentResponse(studentRepository.findById(id).orElseThrow(() ->
         new ResourceNotFound("Sinh vien khong ton tai", HttpStatus.NOT_FOUND)));
   }
 
   // Them du lieu trong bang sinh vien
-  public StudentResponseDto createStudent(StudentCreateForm student) {
+  public StudentDto createStudent(StudentCreateForm student) {
     if (studentRepository.existsByUsername(student.getUserNameValue()))
       throw new DuplicateEntityException("Username nay da ton tai");
     Student newStudent = studentMapper.convertToStudent(student);
@@ -65,7 +65,7 @@ public class StudentDaoService {
   }
 
   // Sua du lieu trong bang sinh vien
-  public StudentResponseDto updateStudent(int id, StudentUpdateForm newStudent) {
+  public StudentDto updateStudent(int id, StudentUpdateForm newStudent) {
     Student oldStudent = studentRepository.findById(id).
         orElseThrow(() -> new ResourceNotFound("Sinh vien nay khong ton tai", HttpStatus.NOT_FOUND));
     if (studentRepository.existsByUsername(newStudent.getUserNameValue()))
@@ -117,21 +117,21 @@ public class StudentDaoService {
   }
 
   // Loc va phan trang cho sinh vien
-  public ShowPagedResults<StudentResponseDto> getFilteredStudents(StudentCriteria studentCriteria, Pageable pageable) {
+  public ShowPagedResults<StudentDto> getFilteredStudents(StudentCriteria studentCriteria, Pageable pageable) {
     Page<Student> students = studentRepository.findAll(studentCriteria.getCriteria(), pageable);
 
-    List<StudentResponseDto> studentDtos = studentMapper.convertToListStudentResponse(students.getContent());
+    List<StudentDto> studentDtos = studentMapper.convertToListStudentResponse(students.getContent());
 
     return new ShowPagedResults<>(studentDtos, students.getTotalElements(), students.getTotalPages());
   }
 
   // Loc va phan trang lay danh sach sinh vien dua vao id khoa hoc va ngay nhap vao
-  public ShowPagedResults<SubjectRegistrationResponse> getStudentsByCriteria(SubjectRegistrationCriteria criteria, Pageable pageable) {
+  public ShowPagedResults<SubjectRegistrationDto> getStudentsByCriteria(SubjectRegistrationCriteria criteria, Pageable pageable) {
 
     Page<SubjectRegistration> studentPage = subjectRegistrationRepository.findAll(
         criteria.getStudentsBySubjectCriteria(), pageable);
 
-    List<SubjectRegistrationResponse> studentListDtos = subjectRegistrationMapper
+    List<SubjectRegistrationDto> studentListDtos = subjectRegistrationMapper
         .convertToListSubjectRegistrationResponse(studentPage.getContent());
 
     return new ShowPagedResults<>(studentListDtos, studentPage.getTotalElements(), studentPage.getTotalPages());
@@ -139,7 +139,7 @@ public class StudentDaoService {
 
   // Cap nhat trang thai sinh vien trong khoa hoc dang ky
   @Transactional
-  public SubjectRegistrationResponse updateSubjectRegistrationStatus(int studentId, int subjectId, Status newStatus) {
+  public SubjectRegistrationDto updateSubjectRegistrationStatus(int studentId, int subjectId, Status newStatus) {
     SubjectRegistration registration = (SubjectRegistration) subjectRegistrationRepository.findByStudentIdAndSubjectId(studentId, subjectId)
         .orElseThrow(() -> new ResourceNotFound("Khoa hoc dang ky khong ton tai", HttpStatus.NOT_FOUND));
 

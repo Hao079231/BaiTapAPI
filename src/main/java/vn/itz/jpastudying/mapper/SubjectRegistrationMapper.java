@@ -6,7 +6,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.Named;
-import vn.itz.jpastudying.Dto.response.SubjectRegistrationResponse;
+import vn.itz.jpastudying.Dto.SubjectRegistrationDto;
 import vn.itz.jpastudying.form.registration.SubjectRegistrationForm;
 import vn.itz.jpastudying.model.SubjectRegistration;
 
@@ -30,11 +30,11 @@ public interface SubjectRegistrationMapper {
       @Mapping(source = "status", target = "statusResponse")
   })
   @Named("subjectRegistrationDto")
-  SubjectRegistrationResponse convertToSubjectRegistrationResponse(
+  SubjectRegistrationDto convertToSubjectRegistrationResponse(
       SubjectRegistration subjectRegistration);
 
-  @IterableMapping(elementTargetType = SubjectRegistrationResponse.class,  qualifiedByName = "subjectRegistrationDto")
-  List<SubjectRegistrationResponse> convertToListSubjectRegistrationResponse(List<SubjectRegistration> subjectRegistrations);
+  @IterableMapping(elementTargetType = SubjectRegistrationDto.class,  qualifiedByName = "subjectRegistrationDto")
+  List<SubjectRegistrationDto> convertToListSubjectRegistrationResponse(List<SubjectRegistration> subjectRegistrations);
 
   @Named("mapToSubjectName")
   default String mapToSubjectName(SubjectRegistration registration) {
