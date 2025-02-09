@@ -12,7 +12,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SubjectResponseDto {
-  private int subjectId;
-  private String subjectName;
-  private String subjectCode;
+  private int subjectIdValue;
+  private String subjectNameValue;
+  private String subjectCodeValue;
+  private boolean subjectStatusValue;
 }

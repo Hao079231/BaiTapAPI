@@ -2,24 +2,23 @@ package vn.itz.jpastudying.service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import vn.itz.jpastudying.Dto.ShowPagedResults;
-import vn.itz.jpastudying.Dto.request.StudentCreateRequestDto;
-import vn.itz.jpastudying.Dto.request.StudentUpdateRequestDto;
 import vn.itz.jpastudying.Dto.response.StudentResponseDto;
-import vn.itz.jpastudying.Dto.response.SubjectResponseDto;
+import vn.itz.jpastudying.Dto.response.SubjectRegistrationResponse;
 import vn.itz.jpastudying.exceptions.DuplicateEntityException;
 import vn.itz.jpastudying.exceptions.ResourceNotFound;
+import vn.itz.jpastudying.form.student.StudentCreateForm;
+import vn.itz.jpastudying.form.student.StudentUpdateForm;
 import vn.itz.jpastudying.mapper.StudentMapper;
 import vn.itz.jpastudying.mapper.SubjectRegistrationMapper;
 import vn.itz.jpastudying.model.Student;
+import vn.itz.jpastudying.model.SubjectRegistration.Status;
 import vn.itz.jpastudying.model.criteria.StudentCriteria;
 import vn.itz.jpastudying.model.Subject;
 import vn.itz.jpastudying.model.SubjectRegistration;
@@ -51,8 +50,8 @@ public class StudentDaoService {
   }
 
   // Them du lieu trong bang sinh vien
-  public StudentResponseDto createStudent(StudentCreateRequestDto student) {
-    if (studentRepository.existsByUsername(student.getUserName()))
+  public StudentResponseDto createStudent(StudentCreateForm student) {
+    if (studentRepository.existsByUsername(student.getUserNameValue()))
       throw new DuplicateEntityException("Username nay da ton tai");
     Student newStudent = studentMapper.convertToStudent(student);
     return studentMapper.convertToStudentResponse(studentRepository.save(newStudent));
@@ -66,10 +65,10 @@ public class StudentDaoService {
   }
 
   // Sua du lieu trong bang sinh vien
-  public StudentResponseDto updateStudent(int id, StudentUpdateRequestDto newStudent) {
+  public StudentResponseDto updateStudent(int id, StudentUpdateForm newStudent) {
     Student oldStudent = studentRepository.findById(id).
         orElseThrow(() -> new ResourceNotFound("Sinh vien nay khong ton tai", HttpStatus.NOT_FOUND));
-    if (studentRepository.existsByUsername(newStudent.getUserName()))
+    if (studentRepository.existsByUsername(newStudent.getUserNameValue()))
       throw new DuplicateEntityException("Username nay da ton tai");
     studentMapper.updateStudent(oldStudent, newStudent);
 
@@ -127,15 +126,27 @@ public class StudentDaoService {
   }
 
   // Loc va phan trang lay danh sach sinh vien dua vao id khoa hoc va ngay nhap vao
-  public ShowPagedResults<StudentResponseDto> getStudentsByCriteria(SubjectRegistrationCriteria criteria, Pageable pageable) {
-    Specification<Student> spec = SubjectRegistrationCriteria.getStudentsBySubjectCriteria(
-        criteria.getSubjectId(),
-        criteria.getRegisteredAfter()
-    );
+  public ShowPagedResults<SubjectRegistrationResponse> getStudentsByCriteria(SubjectRegistrationCriteria criteria, Pageable pageable) {
 
-    Page<Student> students = studentRepository.findAll(spec, pageable);
-    List<StudentResponseDto> subjectDtos = studentMapper.convertToListStudentResponse(students.getContent());
+    Page<SubjectRegistration> studentPage = subjectRegistrationRepository.findAll(
+        criteria.getStudentsBySubjectCriteria(), pageable);
 
-    return new ShowPagedResults<>(subjectDtos, students.getTotalElements(), students.getTotalPages());
+    List<SubjectRegistrationResponse> studentListDtos = subjectRegistrationMapper
+        .convertToListSubjectRegistrationResponse(studentPage.getContent());
+
+    return new ShowPagedResults<>(studentListDtos, studentPage.getTotalElements(), studentPage.getTotalPages());
   }
+
+  // Cap nhat trang thai sinh vien trong khoa hoc dang ky
+  @Transactional
+  public SubjectRegistrationResponse updateSubjectRegistrationStatus(int studentId, int subjectId, Status newStatus) {
+    SubjectRegistration registration = (SubjectRegistration) subjectRegistrationRepository.findByStudentIdAndSubjectId(studentId, subjectId)
+        .orElseThrow(() -> new ResourceNotFound("Khoa hoc dang ky khong ton tai", HttpStatus.NOT_FOUND));
+
+    registration.setStatus(newStatus);
+    subjectRegistrationRepository.save(registration);
+
+    return subjectRegistrationMapper.convertToSubjectRegistrationResponse(registration);
+  }
+
 }

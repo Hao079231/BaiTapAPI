@@ -5,26 +5,40 @@ import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import vn.itz.jpastudying.Dto.request.SubjectCreateRequestDto;
-import vn.itz.jpastudying.Dto.request.SubjectUpdateRequestDto;
+import org.mapstruct.Mappings;
+import org.mapstruct.Named;
 import vn.itz.jpastudying.Dto.response.SubjectResponseDto;
+import vn.itz.jpastudying.form.subject.SubjectCreateForm;
+import vn.itz.jpastudying.form.subject.SubjectUpdateForm;
 import vn.itz.jpastudying.model.Subject;
 
 @Mapper(componentModel = "spring")
 public interface SubjectMapper {
-  @Mapping(source = "subjectName", target = "name")
-  @Mapping(source = "subjectCode", target = "code")
-  Subject convertToSubject(SubjectCreateRequestDto requestDto);
+  @Mappings({
+      @Mapping(source = "subjectNameValue", target = "name"),
+      @Mapping(source = "subjectCodeValue", target = "code"),
+      @Mapping(source = "subjectStatusValue", target = "statusSubject")
+  })
+  Subject convertToSubject(SubjectCreateForm requestDto);
 
-  @Mapping(source = "id", target = "subjectId")
-  @Mapping(source = "name", target = "subjectName")
-  @Mapping(source = "code", target = "subjectCode")
+  @Mappings({
+      @Mapping(source = "id", target = "subjectIdValue"),
+      @Mapping(source = "name", target = "subjectNameValue"),
+      @Mapping(source = "code", target = "subjectCodeValue"),
+      @Mapping(source = "statusSubject", target = "subjectStatusValue")
+
+  })
+  @Named("mapSubjectDto")
   SubjectResponseDto convertToSubjectResponse(Subject subject);
 
-  @IterableMapping(elementTargetType = SubjectResponseDto.class)
+  @IterableMapping(elementTargetType = SubjectResponseDto.class, qualifiedByName = "mapSubjectDto")
   List<SubjectResponseDto> convertToListSubjectResponse(List<Subject> subjects);
 
-  @Mapping(source = "subjectName", target = "name")
-  @Mapping(source = "subjectCode", target = "code")
-  void updateSubject(@MappingTarget Subject subject, SubjectUpdateRequestDto subjectDto);
+  @Mappings({
+      @Mapping(source = "subjectNameValue", target = "name"),
+      @Mapping(source = "subjectCodeValue", target = "code"),
+      @Mapping(source = "subjectStatusValue", target = "statusSubject")
+
+  })
+  void updateSubject(@MappingTarget Subject subject, SubjectUpdateForm subjectDto);
 }

@@ -31,6 +31,9 @@ public class Subject {
   @Column(nullable = false, unique = true)
   private String code;
 
+  @Column(nullable = false)
+  private boolean statusSubject;
+
   @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL)
   @JsonManagedReference
   private List<SubjectRegistration> registrations = new ArrayList<>();

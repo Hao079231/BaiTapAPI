@@ -6,8 +6,8 @@ import lombok.Getter;
 @Getter
 public class SubjectCreateRequestDto {
   @NotEmpty(message = "Ten khoa hoc khong the trong")
-  String subjectName;
+  String subjectNameValue;
 
   @NotEmpty(message = "Ma khoa hoc khong the trong")
-  String subjectCode;
+  String subjectCodeValue;
 }

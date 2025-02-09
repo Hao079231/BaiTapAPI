@@ -5,8 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import vn.itz.jpastudying.model.Student;
-import vn.itz.jpastudying.model.Subject;
 
 @Builder
 @Getter
@@ -14,6 +12,9 @@ import vn.itz.jpastudying.model.Subject;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SubjectRegistrationResponse {
-  private Student studentResponse;
-  private Subject subjectResponse;
+  private Long idResponse;
+  private StudentResponseDto studentResponse;
+  private SubjectResponseDto subjectResponse;
+  private String dateRegisterResponse;
+  private String statusResponse;
 }

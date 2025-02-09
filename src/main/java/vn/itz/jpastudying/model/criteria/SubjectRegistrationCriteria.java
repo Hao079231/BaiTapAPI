@@ -19,14 +19,13 @@ import vn.itz.jpastudying.model.SubjectRegistration;
 public class SubjectRegistrationCriteria {
   private Integer studentId;
   private Integer subjectId;
-  @DateTimeFormat(pattern = "yyyy-MM-dd")
+  @DateTimeFormat(pattern = "dd-MM-yyyy")
   private Date registeredAfter;
 
-  public static Specification<Subject> getSubjectsByStudentCriteria(Integer studentId, Date registeredAfter) {
-    return (Root<Subject> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> {
-      Join<Subject, SubjectRegistration> registrationJoin = root.join("registrations");
-      Join<SubjectRegistration, Student> studentJoin = registrationJoin.join("student");
-
+  public Specification<SubjectRegistration> getSubjectsByStudentCriteria() {
+    return (Root<SubjectRegistration> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> {
+      Join<SubjectRegistration, Student> studentJoin = root.join("student");
+      Join<SubjectRegistration, Subject> subjectJoin = root.join("subject");
 
       List<Predicate> predicates = new ArrayList<>();
 
@@ -35,18 +34,17 @@ public class SubjectRegistrationCriteria {
       }
 
       if (registeredAfter != null) {
-        predicates.add(cb.greaterThan(registrationJoin.get("dateRegister"), registeredAfter));
+        predicates.add(cb.greaterThan(root.get("dateRegister"), registeredAfter));
       }
 
       return cb.and(predicates.toArray(new Predicate[0]));
     };
   }
 
-  public static Specification<Student> getStudentsBySubjectCriteria(Integer subjectId, Date registeredAfter) {
-    return (Root<Student> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> {
-      Join<Student, SubjectRegistration> registrationJoin = root.join("registrations");
-      Join<SubjectRegistration, Subject> subjectJoin = registrationJoin.join("subject");
-
+  public Specification<SubjectRegistration> getStudentsBySubjectCriteria() {
+    return (Root<SubjectRegistration> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> {
+      Join<SubjectRegistration, Student> studentJoin = root.join("student");
+      Join<SubjectRegistration, Subject> subjectJoin = root.join("subject");
 
       List<Predicate> predicates = new ArrayList<>();
 
@@ -55,7 +53,7 @@ public class SubjectRegistrationCriteria {
       }
 
       if (registeredAfter != null) {
-        predicates.add(cb.greaterThan(registrationJoin.get("dateRegister"), registeredAfter));
+        predicates.add(cb.greaterThan(root.get("dateRegister"), registeredAfter));
       }
 
       return cb.and(predicates.toArray(new Predicate[0]));

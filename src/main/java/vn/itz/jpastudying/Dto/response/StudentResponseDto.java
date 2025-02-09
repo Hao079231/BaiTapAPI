@@ -13,10 +13,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StudentResponseDto {
-  private int studentId;
-  private String userName;
-  private String fullName;
-  private Date birthDate;
-  private String passWord;
-  private String genDer;
+  private int studentIdValue;
+  private String userNameValue;
+  private String fullNameValue;
+  private Date birthDateValue;
+  private String passWordValue;
+  private String genderValue;
 }
