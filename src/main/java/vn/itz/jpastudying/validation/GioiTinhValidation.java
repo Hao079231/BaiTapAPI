@@ -9,10 +9,10 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 
 @Documented
-@Constraint(validatedBy = GioiTinhValidator.class)
+@Constraint(validatedBy = GioiTinhValidationImpl.class)
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface GioiTinh {
+public @interface GioiTinhValidation {
   String message() default "Gioi tinh khong hop le. Chi chap nhan gia tri: 1 (Nam), 2 (Nu), 3 (Khac).";
   Class<?>[] groups() default {};
   Class<? extends Payload>[] payload() default {};

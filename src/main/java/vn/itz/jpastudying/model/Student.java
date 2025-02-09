@@ -15,7 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import vn.itz.jpastudying.validation.GioiTinh;
+import vn.itz.jpastudying.validation.GioiTinhValidation;
 
 @Entity
 @Getter
@@ -38,7 +38,6 @@ public class Student {
   @Column(nullable = false)
   private String password;
 
-  @GioiTinh
   @Column(nullable = false)
   private String gender;
 

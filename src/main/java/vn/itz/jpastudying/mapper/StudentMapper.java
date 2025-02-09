@@ -5,35 +5,47 @@ import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Mappings;
+import org.mapstruct.Named;
 import org.mapstruct.NullValuePropertyMappingStrategy;
-import vn.itz.jpastudying.Dto.request.StudentCreateRequestDto;
-import vn.itz.jpastudying.Dto.request.StudentUpdateRequestDto;
-import vn.itz.jpastudying.Dto.response.StudentResponseDto;
+
+import vn.itz.jpastudying.Dto.StudentDto;
+import vn.itz.jpastudying.form.student.StudentCreateForm;
+import vn.itz.jpastudying.form.student.StudentUpdateForm;
 import vn.itz.jpastudying.model.Student;
 
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface StudentMapper {
-  @Mapping(source = "userName", target = "username")
-  @Mapping(source = "fullName", target = "fullname")
-  @Mapping(source = "birthDate", target = "birthday")
-  @Mapping(source = "passWord", target = "password")
-  @Mapping(source = "genDer", target = "gender")
-  Student convertToStudent(StudentCreateRequestDto requestDto);
+  @Mappings({
+      @Mapping(source = "userNameValue", target = "username"),
+      @Mapping(source = "fullNameValue", target = "fullname"),
+      @Mapping(source = "birthDateValue", target = "birthday"),
+      @Mapping(source = "passWordValue", target = "password"),
+      @Mapping(source = "genderValue", target = "gender")
 
-  @Mapping(source = "id", target = "studentId")
-  @Mapping(source = "username", target = "userName")
-  @Mapping(source = "fullname", target = "fullName")
-  @Mapping(source = "birthday", target = "birthDate")
-  @Mapping(target = "passWord", ignore = true)
-  @Mapping(source = "gender", target = "genDer")
-  StudentResponseDto convertToStudentResponse(Student student);
+  })
+  Student convertToStudent(StudentCreateForm requestDto);
 
-  @IterableMapping(elementTargetType = StudentResponseDto.class)
-  List<StudentResponseDto> convertToListStudentResponse(List<Student> students);
+  @Mappings({
+      @Mapping(source = "id", target = "studentIdValue"),
+      @Mapping(source = "username", target = "userNameValue"),
+      @Mapping(source = "fullname", target = "fullNameValue"),
+      @Mapping(source = "birthday", target = "birthDateValue"),
+      @Mapping(source = "gender", target = "genderValue"),
 
-  @Mapping(source = "birthDate", target = "birthday")
-  @Mapping(source = "userName", target = "username")
-  @Mapping(source = "fullName", target = "fullname")
-  @Mapping(source = "genDer", target = "gender")
-  void updateStudent(@MappingTarget Student student, StudentUpdateRequestDto studentDto);
+  })
+  @Named("mapStudentDto")
+  StudentDto convertToStudentResponse(Student student);
+
+  @IterableMapping(elementTargetType = StudentDto.class, qualifiedByName = "mapStudentDto")
+  List<StudentDto> convertToListStudentResponse(List<Student> students);
+
+  @Mappings({
+      @Mapping(source = "userNameValue", target = "username"),
+      @Mapping(source = "fullNameValue", target = "fullname"),
+      @Mapping(source = "birthDateValue", target = "birthday"),
+      @Mapping(source = "passWordValue", target = "password"),
+      @Mapping(source = "genderValue", target = "gender")
+  })
+  void updateStudent(@MappingTarget Student student, StudentUpdateForm studentDto);
 }

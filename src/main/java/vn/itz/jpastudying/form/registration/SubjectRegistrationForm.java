@@ -1,19 +1,18 @@
-package vn.itz.jpastudying.Dto.response;
+package vn.itz.jpastudying.form.registration;
 
+import java.util.Date;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import vn.itz.jpastudying.model.Student;
 import vn.itz.jpastudying.model.Subject;
 
-@Builder
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SubjectRegistrationResponse {
+public class SubjectRegistrationForm {
   private Student studentResponse;
   private Subject subjectResponse;
+  private String statusResponse;
+  private Date dateRegisterResponse;
 }

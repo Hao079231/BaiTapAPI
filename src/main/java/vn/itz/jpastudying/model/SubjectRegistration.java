@@ -44,6 +44,6 @@ public class SubjectRegistration {
   private Status status;
 
   public enum Status{
-    PENDING, ACTIVE
+    PENDING, ACTIVE, COMPLETE
   }
 }

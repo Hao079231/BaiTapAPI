@@ -3,7 +3,6 @@ package vn.itz.jpastudying.controller;
 import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,49 +11,51 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vn.itz.jpastudying.Dto.ApiMessageDto;
 import vn.itz.jpastudying.Dto.ShowPagedResults;
-import vn.itz.jpastudying.Dto.request.SubjectCreateRequestDto;
-import vn.itz.jpastudying.Dto.request.SubjectUpdateRequestDto;
-import vn.itz.jpastudying.Dto.response.SubjectResponseDto;
-import vn.itz.jpastudying.model.Subject;
+import vn.itz.jpastudying.Dto.SubjectRegistrationDto;
+import vn.itz.jpastudying.Dto.SubjectDto;
+import vn.itz.jpastudying.form.subject.SubjectCreateForm;
+import vn.itz.jpastudying.form.subject.SubjectUpdateForm;
 import vn.itz.jpastudying.model.criteria.SubjectCriteria;
 import vn.itz.jpastudying.model.criteria.SubjectRegistrationCriteria;
 import vn.itz.jpastudying.service.SubjectDaoService;
 import vn.itz.jpastudying.utils.ApiResponeUtils;
 
 @RestController
+@RequestMapping("/subject")
 public class SubjectController {
   @Autowired
   private SubjectDaoService subjectDaoService;
 
   // Lay tat ca danh sach cac khoa hoc
-  @GetMapping("/subjects")
-  public ResponseEntity<ApiMessageDto<List<SubjectResponseDto>>> getAllSubject(){
-    ApiMessageDto<List<SubjectResponseDto>> respone = ApiResponeUtils.results("Danh sach cac khoa hoc",
+  @GetMapping("/list")
+  public ResponseEntity<ApiMessageDto<List<SubjectDto>>> getAllSubject(){
+    ApiMessageDto<List<SubjectDto>> respone = ApiResponeUtils.results("Danh sach cac khoa hoc",
         subjectDaoService.getAllSubject());
     return ResponseEntity.ok(respone);
   }
 
   // Lay thong tin mot khoa hoc
-  @GetMapping("/subject/{id}")
-  public ResponseEntity<ApiMessageDto<SubjectResponseDto>> getSubjectById(@PathVariable int id) {
-    ApiMessageDto<SubjectResponseDto> response = ApiResponeUtils.results("Thong tin mot khoa hoc",
+  @GetMapping("/{id}")
+  public ResponseEntity<ApiMessageDto<SubjectDto>> getSubjectById(@PathVariable int id) {
+    ApiMessageDto<SubjectDto> response = ApiResponeUtils.results("Thong tin mot khoa hoc",
         subjectDaoService.findSubjectById(id));
     return ResponseEntity.ok(response);
   }
 
   // Them thong tin mot khoa hoc
-  @PostMapping("/subject")
-  public ResponseEntity<ApiMessageDto<SubjectResponseDto>> createSubject(@Valid @RequestBody SubjectCreateRequestDto subject) {
-    ApiMessageDto<SubjectResponseDto> response = ApiResponeUtils.results("Them thong tin khoa hoc thanh cong",
+  @PostMapping("/create")
+  public ResponseEntity<ApiMessageDto<SubjectDto>> createSubject(@Valid @RequestBody SubjectCreateForm subject) {
+    ApiMessageDto<SubjectDto> response = ApiResponeUtils.results("Them thong tin khoa hoc thanh cong",
         subjectDaoService.createSubject(subject));
     return ResponseEntity.ok(response);
   }
 
   // Xoa thong tin mot khoa hoc
-  @DeleteMapping("/subject/{id}")
+  @DeleteMapping("/delete/{id}")
   public ResponseEntity<ApiMessageDto<Void>> deleteSubject(@PathVariable int id) {
     subjectDaoService.deleteSubject(id);
     ApiMessageDto<Void> response = ApiResponeUtils.results("Xoa thong tin khoa hoc thanh cong",
@@ -63,31 +64,31 @@ public class SubjectController {
   }
 
   // Cap nhat thong tin mot khoa hoc
-  @PutMapping("/subject/{id}")
-  public ResponseEntity<ApiMessageDto<SubjectResponseDto>> updateSubject(@PathVariable int id, @Valid @RequestBody SubjectUpdateRequestDto subject) {
-    ApiMessageDto<SubjectResponseDto> response = ApiResponeUtils.results("Cap nhat thong tin khoa hoc thanh cong",
+  @PutMapping("/update/{id}")
+  public ResponseEntity<ApiMessageDto<SubjectDto>> updateSubject(@PathVariable int id, @Valid @RequestBody SubjectUpdateForm subject) {
+    ApiMessageDto<SubjectDto> response = ApiResponeUtils.results("Cap nhat thong tin khoa hoc thanh cong",
         subjectDaoService.updateSubject(id, subject));
     return ResponseEntity.ok(response);
   }
 
   // Loc va phan trang khoa hoc
-  @GetMapping("/subject/pagination")
-  public ResponseEntity<ApiMessageDto<ShowPagedResults<SubjectResponseDto>>> getPagedSubjects(
+  @GetMapping("/pagination")
+  public ResponseEntity<ApiMessageDto<ShowPagedResults<SubjectDto>>> getPagedSubjects(
       SubjectCriteria subjectCriteria, Pageable pageable) {
 
-    ShowPagedResults<SubjectResponseDto> subjects = subjectDaoService.getFilteredSubjects(subjectCriteria, pageable);
-    ApiMessageDto<ShowPagedResults<SubjectResponseDto>> response = ApiResponeUtils.results("Danh sach khoa hoc", subjects);
+    ShowPagedResults<SubjectDto> subjects = subjectDaoService.getFilteredSubjects(subjectCriteria, pageable);
+    ApiMessageDto<ShowPagedResults<SubjectDto>> response = ApiResponeUtils.results("Danh sach khoa hoc", subjects);
 
     return ResponseEntity.ok(response);
   }
 
   // Loc va phan trang danh sach khoa hoc tu id sinh vien va ngay nhap vao
-  @GetMapping("/subject/list-by-student-and-date")
-  public ResponseEntity<ApiMessageDto<ShowPagedResults<SubjectResponseDto>>> getSubjectsByStudentIdAndDate(
+  @GetMapping("/list-by-student-and-date")
+  public ResponseEntity<ApiMessageDto<ShowPagedResults<SubjectRegistrationDto>>> getSubjectsByStudentIdAndDate(
       SubjectRegistrationCriteria criteria, Pageable pageable) {
 
-    ShowPagedResults<SubjectResponseDto> subjects = subjectDaoService.getSubjectsByCriteria(criteria, pageable);
-    ApiMessageDto<ShowPagedResults<SubjectResponseDto>> response = ApiResponeUtils.results("Danh sach khoa hoc duoc mot sinh vien dang ky", subjects);
+    ShowPagedResults<SubjectRegistrationDto> subjects = subjectDaoService.getSubjectsByCriteria(criteria, pageable);
+    ApiMessageDto<ShowPagedResults<SubjectRegistrationDto>> response = ApiResponeUtils.results("Danh sach khoa hoc duoc mot sinh vien dang ky", subjects);
 
     return ResponseEntity.ok(response);
   }

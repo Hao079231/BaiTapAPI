@@ -1,15 +1,14 @@
 package vn.itz.jpastudying.validation;
 
-import java.util.Arrays;
 import java.util.List;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-public class GioiTinhValidator  implements ConstraintValidator<GioiTinh, String> {
-  private static final List<String> VALID_GENDERS = Arrays.asList("1", "2", "3");
+public class GioiTinhValidationImpl implements ConstraintValidator<GioiTinhValidation, String> {
+  private static final List<String> VALID_GENDERS = List.of("1", "2", "3");
   @Override
-  public void initialize(GioiTinh gioiTinh) {
-    ConstraintValidator.super.initialize(gioiTinh);
+  public void initialize(GioiTinhValidation gioiTinhValidation) {
+    ConstraintValidator.super.initialize(gioiTinhValidation);
   }
 
   @Override
