@@ -21,8 +21,8 @@ public interface StudentMapper {
       @Mapping(source = "fullNameValue", target = "fullname"),
       @Mapping(source = "birthDateValue", target = "birthday"),
       @Mapping(source = "passWordValue", target = "password"),
-      @Mapping(source = "genderValue", target = "gender")
-
+      @Mapping(source = "genderValue", target = "gender"),
+      @Mapping(source = "roleValue", target = "role")
   })
   Student convertToStudent(StudentCreateForm requestDto);
 
@@ -32,6 +32,7 @@ public interface StudentMapper {
       @Mapping(source = "fullname", target = "fullNameValue"),
       @Mapping(source = "birthday", target = "birthDateValue"),
       @Mapping(source = "gender", target = "genderValue"),
+      @Mapping(source = "role", target = "roleValue")
 
   })
   @Named("mapStudentDto")
@@ -45,7 +46,8 @@ public interface StudentMapper {
       @Mapping(source = "fullNameValue", target = "fullname"),
       @Mapping(source = "birthDateValue", target = "birthday"),
       @Mapping(source = "passWordValue", target = "password"),
-      @Mapping(source = "genderValue", target = "gender")
+      @Mapping(source = "genderValue", target = "gender"),
+      @Mapping(source = "roleValue", target = "role")
   })
   void updateStudent(@MappingTarget Student student, StudentUpdateForm studentDto);
 }

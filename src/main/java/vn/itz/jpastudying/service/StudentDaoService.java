@@ -1,6 +1,8 @@
 package vn.itz.jpastudying.service;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import vn.itz.jpastudying.Dto.ShowPagedResults;
 import vn.itz.jpastudying.Dto.StudentDto;
 import vn.itz.jpastudying.Dto.SubjectRegistrationDto;
+import vn.itz.jpastudying.enums.Role;
 import vn.itz.jpastudying.exceptions.DuplicateEntityException;
 import vn.itz.jpastudying.exceptions.ResourceNotFound;
 import vn.itz.jpastudying.form.student.StudentCreateForm;
@@ -54,6 +57,7 @@ public class StudentDaoService {
     if (studentRepository.existsByUsername(student.getUserNameValue()))
       throw new DuplicateEntityException("Username nay da ton tai");
     Student newStudent = studentMapper.convertToStudent(student);
+    newStudent.setRole(String.valueOf(Role.USER));
     return studentMapper.convertToStudentResponse(studentRepository.save(newStudent));
   }
 
@@ -68,10 +72,8 @@ public class StudentDaoService {
   public StudentDto updateStudent(int id, StudentUpdateForm newStudent) {
     Student oldStudent = studentRepository.findById(id).
         orElseThrow(() -> new ResourceNotFound("Sinh vien nay khong ton tai", HttpStatus.NOT_FOUND));
-    if (studentRepository.existsByUsername(newStudent.getUserNameValue()))
-      throw new DuplicateEntityException("Username nay da ton tai");
     studentMapper.updateStudent(oldStudent, newStudent);
-
+    oldStudent.setRole(String.valueOf((Role.USER)));
 
     return studentMapper.convertToStudentResponse(studentRepository.save(oldStudent));
   }

@@ -9,7 +9,6 @@ import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 import vn.itz.jpastudying.validation.GioiTinhValidation;
 
 @Getter
@@ -42,4 +41,6 @@ public class StudentCreateForm {
   @ApiModelProperty(value = "Gioi tinh: 1 - nam, 2 - nu, 3 - khac", example = "1", required = false)
   @GioiTinhValidation
   private String genderValue;
+
+  private String roleValue;
 }
