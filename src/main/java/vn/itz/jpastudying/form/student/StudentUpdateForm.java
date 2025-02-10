@@ -4,10 +4,12 @@ import io.swagger.annotations.ApiModelProperty;
 import java.util.Date;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Past;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import vn.itz.jpastudying.validation.GioiTinhValidation;
 
 @Getter
@@ -27,9 +29,13 @@ public class StudentUpdateForm {
   private Date birthDateValue;
 
 
-  @ApiModelProperty(value = "Mat khau", example = "vana03190", required = true)
-  @NotEmpty(message = "Password khong the trong")
-  @Size(min = 5, message = "Password phai it nhat co 5 ky tu")
+  @ApiModelProperty(value = "Mat khau", example = "Vana@03190", required = true)
+  @NotEmpty(message = "Mat khau khong the trong")
+  @Size(min = 6, message = "Mat khau phai it nhat co 6 ki tu")
+  @Pattern(
+      regexp = "^(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{6,}$",
+      message = "Mat khau phai co it nhat 1 ki tu viet hoa, 1 ki tu dac biet va toi thieu phai co 6 ki tu"
+  )
   private String passWordValue;
 
   @ApiModelProperty(value = "Gioi tinh: 1 - nam, 2 - nu, 3 - khac", example = "1", required = false)
