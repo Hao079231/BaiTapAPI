@@ -18,7 +18,7 @@ public interface SubjectRepository extends JpaRepository<Subject, Integer>,
   @Query("UPDATE Subject s SET s.statusSubject = true WHERE s.id IN (" +
       "SELECT sr.subject.id FROM SubjectRegistration sr " +
       "GROUP BY sr.subject.id HAVING COUNT(sr.id) > 0 " +
-      "AND SUM(CASE WHEN sr.status <> 'COMPLETE' THEN 1 ELSE 0 END) = 0)")
+      "AND COUNT(CASE WHEN sr.status <> 'COMPLETE' THEN 1 END) = 0)")
   @Transactional
   int updateCompletedSubjects();
 
