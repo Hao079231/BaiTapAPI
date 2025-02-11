@@ -1,7 +1,6 @@
 package vn.itz.jpastudying.controller;
 
-import com.nimbusds.jose.JOSEException;
-import java.text.ParseException;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,9 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vn.itz.jpastudying.Dto.ApiMessageDto;
 import vn.itz.jpastudying.Dto.AuthenticationDto;
-import vn.itz.jpastudying.Dto.StudentDto;
-import vn.itz.jpastudying.form.authentication.AuthenticationForm;
-import vn.itz.jpastudying.form.authentication.IntrospectForm;
+import vn.itz.jpastudying.form.student.StudentCreateForm;
 import vn.itz.jpastudying.service.AuthenticationService;
 import vn.itz.jpastudying.utils.ApiResponeUtils;
 
@@ -21,23 +18,23 @@ import vn.itz.jpastudying.utils.ApiResponeUtils;
 public class AuthenticationController {
 
   @Autowired
-  private AuthenticationService authenticationService;
+  private AuthenticationService authService;
 
-  // Lay token tu viec nhap username, password
-  @PostMapping("/token")
-  public ResponseEntity<ApiMessageDto<AuthenticationDto>> authenticate(@RequestBody
-      AuthenticationForm request){
-    AuthenticationDto result = authenticationService.authenticate(request);
-    ApiMessageDto<AuthenticationDto> response = ApiResponeUtils.results("Ket qua", result);
+  @PostMapping("/token/register")
+  public ResponseEntity<ApiMessageDto<AuthenticationDto>> register(@Valid @RequestBody StudentCreateForm request) {
+    ApiMessageDto<AuthenticationDto> response = ApiResponeUtils.results(
+        "Dang ky thanh cong",
+        authService.register(request)
+    );
     return ResponseEntity.ok(response);
   }
 
-  // Tra ve thong tin chi tiet cua mot sinh vien khi nhap token
-  @PostMapping("/introspect")
-  public ResponseEntity<ApiMessageDto<StudentDto>> authenticate(@RequestBody
-  IntrospectForm request) throws ParseException, JOSEException {
-    StudentDto result = authenticationService.introspect(request);
-    ApiMessageDto<StudentDto> response = ApiResponeUtils.results("Ket qua", result);
+  @PostMapping("/token/login")
+  public ResponseEntity<ApiMessageDto<AuthenticationDto>> login(@RequestBody StudentCreateForm request) {
+    ApiMessageDto<AuthenticationDto> response = ApiResponeUtils.results(
+        "Dang nhap thanh cong",
+        authService.authenticate(request)
+    );
     return ResponseEntity.ok(response);
   }
 }

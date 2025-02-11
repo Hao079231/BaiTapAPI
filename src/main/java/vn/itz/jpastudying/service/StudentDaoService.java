@@ -1,14 +1,13 @@
 package vn.itz.jpastudying.service;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import vn.itz.jpastudying.Dto.ShowPagedResults;
 import vn.itz.jpastudying.Dto.StudentDto;
@@ -46,6 +45,9 @@ public class StudentDaoService {
   @Autowired
   private SubjectRegistrationMapper subjectRegistrationMapper;
 
+  @Autowired
+  private PasswordEncoder passwordEncoder;
+
   // Lay mot sinh vien bat ky trong bang sinh vien
   public StudentDto findStudentById(int id) {
     return studentMapper.convertToStudentResponse(studentRepository.findById(id).orElseThrow(() ->
@@ -57,7 +59,9 @@ public class StudentDaoService {
     if (studentRepository.existsByUsername(student.getUserNameValue()))
       throw new DuplicateEntityException("Username nay da ton tai");
     Student newStudent = studentMapper.convertToStudent(student);
-    newStudent.setRole(String.valueOf(Role.USER));
+    newStudent.setRole((Role.USER));
+    newStudent.setPassword(passwordEncoder.encode(student.getPassWordValue()));
+    newStudent.setAuthorities(student.getAuthoritiesValue());
     return studentMapper.convertToStudentResponse(studentRepository.save(newStudent));
   }
 
@@ -73,8 +77,9 @@ public class StudentDaoService {
     Student oldStudent = studentRepository.findById(id).
         orElseThrow(() -> new ResourceNotFound("Sinh vien nay khong ton tai", HttpStatus.NOT_FOUND));
     studentMapper.updateStudent(oldStudent, newStudent);
-    oldStudent.setRole(String.valueOf((Role.USER)));
-
+    oldStudent.setRole(((Role.USER)));
+    oldStudent.setPassword(passwordEncoder.encode(newStudent.getPassWordValue()));
+    oldStudent.setAuthorities(newStudent.getAuthoritiesValue());
     return studentMapper.convertToStudentResponse(studentRepository.save(oldStudent));
   }
 

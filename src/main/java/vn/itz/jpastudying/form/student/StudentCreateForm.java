@@ -2,6 +2,7 @@ package vn.itz.jpastudying.form.student;
 
 import io.swagger.annotations.ApiModelProperty;
 import java.util.Date;
+import java.util.Set;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
@@ -32,7 +33,7 @@ public class StudentCreateForm {
   @NotEmpty(message = "Mat khau khong the trong")
   @Size(min = 6, message = "Mat khau phai it nhat co 6 ki tu")
   @Pattern(
-      regexp = "^(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{6,}$",
+      regexp = "^(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&]).{6,}$",
       message = "Mat khau phai co it nhat 1 ki tu viet hoa, 1 ki tu dac biet va toi thieu phai co 6 ki tu"
   )
   private String passWordValue;
@@ -42,5 +43,9 @@ public class StudentCreateForm {
   @GioiTinhValidation
   private String genderValue;
 
+  @NotEmpty(message = "Quyen cua sinh vien khong the trong")
   private String roleValue;
+
+  @NotEmpty(message = "Authorities khong the trong")
+  private Set<String> authoritiesValue; // Danh sach quyen (C_GET, C_CREATE, C_DEL, C_UPD)
 }
