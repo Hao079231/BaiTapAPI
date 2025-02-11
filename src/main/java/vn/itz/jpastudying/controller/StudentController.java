@@ -24,6 +24,7 @@ import vn.itz.jpastudying.model.Student;
 import vn.itz.jpastudying.model.SubjectRegistration.Status;
 import vn.itz.jpastudying.model.criteria.StudentCriteria;
 import vn.itz.jpastudying.model.criteria.SubjectRegistrationCriteria;
+import vn.itz.jpastudying.repository.StudentDAO;
 import vn.itz.jpastudying.service.StudentDaoService;
 import vn.itz.jpastudying.utils.ApiResponeUtils;
 
@@ -32,6 +33,9 @@ import vn.itz.jpastudying.utils.ApiResponeUtils;
 public class StudentController {
   @Autowired
   private StudentDaoService studentDaoService;
+
+  @Autowired
+  private StudentDAO studentDAO;
 
 //   Lay ra du lieu cua mot sinh vien
   @GetMapping("/{id}")
@@ -125,6 +129,14 @@ public class StudentController {
     ApiMessageDto<SubjectRegistrationDto> response = ApiResponeUtils.results(
         "Cap nhat trang thai sinh vien trong khoa hoc thanh cong", updatedStatus);
 
+    return ResponseEntity.ok(response);
+  }
+
+  // Thuc hien xoa mot sinh vien khong dung JPA
+  @DeleteMapping("/statement/{id}")
+  public ResponseEntity<ApiMessageDto<Boolean>> deleteStudentStatement(@PathVariable int id) {
+    boolean isDeleted = studentDAO.deleteStudentById(id);
+    ApiMessageDto<Boolean> response = ApiResponeUtils.results("Xoa du lieu sinh vien thanh cong", isDeleted);
     return ResponseEntity.ok(response);
   }
 

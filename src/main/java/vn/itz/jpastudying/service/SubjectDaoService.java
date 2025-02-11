@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import vn.itz.jpastudying.Dto.ShowPagedResults;
 import vn.itz.jpastudying.Dto.SubjectRegistrationDto;
@@ -18,7 +17,6 @@ import vn.itz.jpastudying.mapper.SubjectMapper;
 import vn.itz.jpastudying.mapper.SubjectRegistrationMapper;
 import vn.itz.jpastudying.model.Subject;
 import vn.itz.jpastudying.model.SubjectRegistration;
-import vn.itz.jpastudying.model.SubjectRegistration.Status;
 import vn.itz.jpastudying.model.criteria.SubjectCriteria;
 import vn.itz.jpastudying.model.criteria.SubjectRegistrationCriteria;
 import vn.itz.jpastudying.repository.SubjectRegistrationRepository;
@@ -98,24 +96,5 @@ public class SubjectDaoService {
     return new ShowPagedResults<>(studentListDtos, subjectPage.getTotalElements(), subjectPage.getTotalPages());
   }
 
-  // Ham kiem tra sinh vien cac khoa hoc da hoan thanh khoa hoc hay chua, neu da hoan thanh thi chuyen done
-  @Scheduled(cron = "0 0 0 * * ?")
-//  @Scheduled(cron = "*/10 * * * * *")
-  public void updateSubjectStatus() {
-    List<Subject> subjects = subjectRepository.findAll();
 
-    for (Subject subject : subjects) {
-      List<SubjectRegistration> registrations = subjectRegistrationRepository.findBySubject(subject);
-
-      // Kiem tat ca sinh vien cua mot khoa deu COMPLETE
-      boolean allCompleted = registrations.stream()
-          .allMatch(reg -> reg.getStatus() == Status.COMPLETE);
-
-      if (allCompleted && !subject.isStatusSubject()) {
-        subject.setStatusSubject(true);
-        subjectRepository.save(subject);
-        System.out.println("Cap nhat trang thai DONE cho khoa hoc: " + subject.getName());
-      }
-    }
-  }
 }

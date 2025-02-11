@@ -19,6 +19,4 @@ public interface SubjectRegistrationRepository extends JpaRepository<SubjectRegi
   boolean existsByStudentIdAndSubjectId(int studentId, int subjectId);
 
   Optional<Object> findByStudentIdAndSubjectId(int studentId, int subjectId);
-
-  List<SubjectRegistration> findBySubject(Subject subject);
 }

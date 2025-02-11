@@ -72,4 +72,20 @@ public class GlobalExceptionHandler {
     );
     return ResponseEntity.status(HttpStatus.CONFLICT).body(respone);
   }
+
+  // Loi 401 - Unauthorized
+  @ExceptionHandler(UnauthorizedException.class)
+  public ResponseEntity<ApiMessageDto<String>> handleUnauthorized(UnauthorizedException ex) {
+    ApiMessageDto<String> response = new ApiMessageDto<>(
+        false, ex.getMessage(), null, HttpStatus.UNAUTHORIZED);
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+  }
+
+  // Loi 403 - Forbidden
+  @ExceptionHandler(ForbiddenException.class)
+  public ResponseEntity<ApiMessageDto<String>> handleForbidden(ForbiddenException ex) {
+    ApiMessageDto<String> response = new ApiMessageDto<>(
+        false, ex.getMessage(), null, HttpStatus.FORBIDDEN);
+    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+  }
 }

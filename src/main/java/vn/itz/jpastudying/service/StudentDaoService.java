@@ -7,10 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import vn.itz.jpastudying.Dto.ShowPagedResults;
 import vn.itz.jpastudying.Dto.StudentDto;
 import vn.itz.jpastudying.Dto.SubjectRegistrationDto;
+import vn.itz.jpastudying.enums.Role;
 import vn.itz.jpastudying.exceptions.DuplicateEntityException;
 import vn.itz.jpastudying.exceptions.ResourceNotFound;
 import vn.itz.jpastudying.form.student.StudentCreateForm;
@@ -43,6 +45,9 @@ public class StudentDaoService {
   @Autowired
   private SubjectRegistrationMapper subjectRegistrationMapper;
 
+  @Autowired
+  private PasswordEncoder passwordEncoder;
+
   // Lay mot sinh vien bat ky trong bang sinh vien
   public StudentDto findStudentById(int id) {
     return studentMapper.convertToStudentResponse(studentRepository.findById(id).orElseThrow(() ->
@@ -54,6 +59,9 @@ public class StudentDaoService {
     if (studentRepository.existsByUsername(student.getUserNameValue()))
       throw new DuplicateEntityException("Username nay da ton tai");
     Student newStudent = studentMapper.convertToStudent(student);
+    newStudent.setRole((Role.USER));
+    newStudent.setPassword(passwordEncoder.encode(student.getPassWordValue()));
+    newStudent.setAuthorities(student.getAuthoritiesValue());
     return studentMapper.convertToStudentResponse(studentRepository.save(newStudent));
   }
 
@@ -68,11 +76,10 @@ public class StudentDaoService {
   public StudentDto updateStudent(int id, StudentUpdateForm newStudent) {
     Student oldStudent = studentRepository.findById(id).
         orElseThrow(() -> new ResourceNotFound("Sinh vien nay khong ton tai", HttpStatus.NOT_FOUND));
-    if (studentRepository.existsByUsername(newStudent.getUserNameValue()))
-      throw new DuplicateEntityException("Username nay da ton tai");
     studentMapper.updateStudent(oldStudent, newStudent);
-
-
+    oldStudent.setRole(((Role.USER)));
+    oldStudent.setPassword(passwordEncoder.encode(newStudent.getPassWordValue()));
+    oldStudent.setAuthorities(newStudent.getAuthoritiesValue());
     return studentMapper.convertToStudentResponse(studentRepository.save(oldStudent));
   }
 
