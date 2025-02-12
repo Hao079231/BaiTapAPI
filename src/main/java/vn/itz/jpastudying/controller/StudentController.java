@@ -5,6 +5,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,6 +40,7 @@ public class StudentController {
 
 //   Lay ra du lieu cua mot sinh vien
   @GetMapping("/{id}")
+  @PreAuthorize("hasAuthority('C_GET')")
   public ResponseEntity<ApiMessageDto<StudentDto>> getStudentById(@PathVariable int id) {
 
     ApiMessageDto<StudentDto> response = ApiResponeUtils.results("Thong tin sinh vien",
@@ -48,6 +50,7 @@ public class StudentController {
 
   // Them mot sinh vien vao bang
   @PostMapping("/create")
+  @PreAuthorize("hasAuthority('C_CREATE')")
   public ResponseEntity<ApiMessageDto<StudentDto>> createStudent(@Valid @RequestBody StudentCreateForm student) {
     ApiMessageDto<StudentDto> response = ApiResponeUtils.results("Them du lieu sinh vien thanh cong",
         studentDaoService.createStudent(student));
@@ -56,6 +59,7 @@ public class StudentController {
 
   // Xoa mot sinh vien ra khoi bang
   @DeleteMapping("/delete/{id}")
+  @PreAuthorize("hasAuthority('C_DEL')")
   public ResponseEntity<ApiMessageDto<Void>> deleteStudent(@PathVariable int id) {
     studentDaoService.deleteStudent(id);
     ApiMessageDto<Void> respone = ApiResponeUtils.results("Xoa du lieu sinh vien thanh cong",
@@ -65,6 +69,7 @@ public class StudentController {
 
   // Cap nhat du lieu sinh vien trong bang
   @PutMapping("/update/{id}")
+  @PreAuthorize("hasAuthority('C_UPD')")
   public ResponseEntity<ApiMessageDto<StudentDto>> updateStudent(@PathVariable int id, @Valid @RequestBody StudentUpdateForm student) {
     ApiMessageDto<StudentDto> response = ApiResponeUtils.results("Cap nhat du lieu sinh vien thanh cong",
         studentDaoService.updateStudent(id, student));
@@ -73,6 +78,7 @@ public class StudentController {
 
   // Lay tat ca danh sach khoa hoc ma mot sinh vien dang ky - ManyToOne, OneToMany
   @GetMapping("/{student_id}/subjects")
+  @PreAuthorize("hasAuthority('C_GET')")
   public ResponseEntity<ApiMessageDto<List<String>>> getEnrolledSubjects(@PathVariable int student_id) {
     List<String> subjectIds = studentDaoService.getEnrolledSubjects(student_id);
     ApiMessageDto<List<String>> response = ApiResponeUtils.results("Danh sach mon hoc ma sinh vien da dang ky", subjectIds);
@@ -81,6 +87,7 @@ public class StudentController {
 
   // Dang ky khoa hoc cho sinh vien
   @PostMapping("/{student_id}/subject/{subject_id}")
+  @PreAuthorize("hasAuthority('C_CREATE')")
   public ResponseEntity<ApiMessageDto<String>> enrollSubject(@PathVariable int student_id, @PathVariable int subject_id){
     ApiMessageDto<String> respone = ApiResponeUtils.results("Dang ky khoa hoc thanh cong",
         studentDaoService.enrollSubject(student_id, subject_id));
@@ -89,6 +96,7 @@ public class StudentController {
 
   // Xoa mot khoa hoc da dang ky
   @DeleteMapping("/{student_id}/subject/{subject_id}")
+  @PreAuthorize("hasAuthority('C_DEL')")
   public ResponseEntity<ApiMessageDto<Student>> removeSubject(@PathVariable int student_id, @PathVariable int subject_id){
     ApiMessageDto<Student> respone = ApiResponeUtils.results("Xoa khoa hoc thanh cong",
         studentDaoService.removeSubject(student_id, subject_id));
@@ -97,6 +105,7 @@ public class StudentController {
 
   // Loc va phan trang sinh vien
   @GetMapping("/pagination")
+  @PreAuthorize("hasAuthority('C_GET')")
   public ResponseEntity<ApiMessageDto<ShowPagedResults<StudentDto>>> getPagedStudents(
       StudentCriteria studentCriteria, Pageable pageable) {
 
@@ -108,6 +117,7 @@ public class StudentController {
 
   // Loc va phan trang danh sach sinh vien tu id khoa hoc va ngay nhap vao
   @GetMapping("/list-by-subject-and-date")
+  @PreAuthorize("hasAuthority('C_GET')")
   public ResponseEntity<ApiMessageDto<ShowPagedResults<SubjectRegistrationDto>>> getStudentsBySubjectIdAndDate(
       SubjectRegistrationCriteria criteria, Pageable pageable) {
 
@@ -120,6 +130,7 @@ public class StudentController {
 
   // Cap nhat trang thai sinh vien trong khoa hoc dang ky
   @PutMapping("/{studentId}/subject-registration/{subjectId}/status")
+  @PreAuthorize("hasAuthority('C_UPD')")
   public ResponseEntity<ApiMessageDto<SubjectRegistrationDto>> updateRegistrationStatus(
       @PathVariable int studentId,
       @PathVariable int subjectId,
@@ -134,6 +145,7 @@ public class StudentController {
 
   // Thuc hien xoa mot sinh vien khong dung JPA
   @DeleteMapping("/statement/{id}")
+  @PreAuthorize("hasAuthority('C_DEL')")
   public ResponseEntity<ApiMessageDto<Boolean>> deleteStudentStatement(@PathVariable int id) {
     boolean isDeleted = studentDAO.deleteStudentById(id);
     ApiMessageDto<Boolean> response = ApiResponeUtils.results("Xoa du lieu sinh vien thanh cong", isDeleted);
