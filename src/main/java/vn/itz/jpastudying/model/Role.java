@@ -22,7 +22,7 @@ public class Role {
   @Column(nullable = false, unique = true)
   private Integer kind;
 
-  @ManyToMany
+  @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(
       name = "role_permission",
       joinColumns = @JoinColumn(name = "role_id"),

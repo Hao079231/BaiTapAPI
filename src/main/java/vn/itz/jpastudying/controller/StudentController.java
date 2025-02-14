@@ -1,9 +1,11 @@
 package vn.itz.jpastudying.controller;
 
 import java.util.List;
+import java.util.Map;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -152,4 +154,20 @@ public class StudentController {
     return ResponseEntity.ok(response);
   }
 
+  // Cap nhat diem cho sinh vien
+  @PutMapping("{studentId}/update-result/{subjectId}/subject")
+  @PreAuthorize("hasAuthority('C_UPD')")
+  public ResponseEntity<ApiMessageDto<SubjectRegistrationDto>> updateStudentResult(@PathVariable int studentId, @PathVariable int subjectId, @RequestParam("studyResultResponse") float result){
+    SubjectRegistrationDto subjectRegistrationDto = studentDaoService.updateStudentScore(studentId, subjectId, result);
+    ApiMessageDto<SubjectRegistrationDto> response = ApiResponeUtils.results("Cap nhat diem thanh cong", subjectRegistrationDto);
+    return ResponseEntity.ok(response);
+  }
+
+  @GetMapping("/report")
+  @PreAuthorize("hasAuthority('C_GET')")
+  public ResponseEntity<ApiMessageDto<Map<String, Object>>> getStudentReport() {
+    Map<String, Object> reportData = studentDaoService.getStudentReport();
+    ApiMessageDto<Map<String, Object>> response = ApiResponeUtils.results("Bao cao tinh hinh hoc tap", reportData);
+    return ResponseEntity.ok(response);
+  }
 }

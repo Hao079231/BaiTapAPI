@@ -15,4 +15,4 @@ public class SubjectRegistrationForm {
   private Subject subjectResponse;
   private String statusResponse;
   private Date dateRegisterResponse;
-}
+  private float studyResultResponse;}

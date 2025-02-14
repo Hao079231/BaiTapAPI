@@ -2,6 +2,7 @@ package vn.itz.jpastudying.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.util.Date;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -43,6 +44,9 @@ public class SubjectRegistration {
 
   @Enumerated(EnumType.STRING)
   private Status status;
+
+  @Column(name = "result")
+  private float studyResult;
 
   public enum Status{
     PENDING, ACTIVE, COMPLETE
