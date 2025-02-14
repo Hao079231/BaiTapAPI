@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -28,12 +29,12 @@ public class SubjectRegistration {
   private int id;
 
   @ManyToOne
-  @JoinColumn(name = "student_id")
+  @JoinColumn(name = "student_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_subject_registration_student"))
   @JsonBackReference
   private Student student;
 
   @ManyToOne
-  @JoinColumn(name = "subject_id")
+  @JoinColumn(name = "subject_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_subject_registration_subject"))
   @JsonBackReference
   private Subject subject;
 

@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vn.itz.jpastudying.Dto.ApiMessageDto;
 import vn.itz.jpastudying.Dto.AuthenticationDto;
-import vn.itz.jpastudying.form.student.StudentCreateForm;
+import vn.itz.jpastudying.form.student.StudentActivateForm;
+import vn.itz.jpastudying.form.user.UserCreateForm;
 import vn.itz.jpastudying.service.AuthenticationService;
 import vn.itz.jpastudying.utils.ApiResponeUtils;
 
@@ -20,8 +21,8 @@ public class AuthenticationController {
   @Autowired
   private AuthenticationService authService;
 
-  @PostMapping("/token/register")
-  public ResponseEntity<ApiMessageDto<AuthenticationDto>> register(@Valid @RequestBody StudentCreateForm request) {
+  @PostMapping("/register")
+  public ResponseEntity<ApiMessageDto<AuthenticationDto>> register(@Valid @RequestBody UserCreateForm request) {
     ApiMessageDto<AuthenticationDto> response = ApiResponeUtils.results(
         "Dang ky thanh cong",
         authService.register(request)
@@ -29,8 +30,17 @@ public class AuthenticationController {
     return ResponseEntity.ok(response);
   }
 
+  @PostMapping("/activate-student")
+  public ResponseEntity<ApiMessageDto<AuthenticationDto>> activateStudent(@Valid @RequestBody StudentActivateForm request) {
+    ApiMessageDto<AuthenticationDto> response = ApiResponeUtils.results(
+        "Kich hoat thanh cong",
+        authService.activateStudent(request)
+    );
+    return ResponseEntity.ok(response);
+  }
+
   @PostMapping("/token/login")
-  public ResponseEntity<ApiMessageDto<AuthenticationDto>> login(@RequestBody StudentCreateForm request) {
+  public ResponseEntity<ApiMessageDto<AuthenticationDto>> login(@RequestBody UserCreateForm request) {
     ApiMessageDto<AuthenticationDto> response = ApiResponeUtils.results(
         "Dang nhap thanh cong",
         authService.authenticate(request)
