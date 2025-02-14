@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import vn.itz.jpastudying.model.CustomUserDetails;
 import vn.itz.jpastudying.model.Student;
 
 @Slf4j
@@ -58,24 +59,25 @@ public class JwtService {
         .getBody();
   }
 
-  // Tao token chua username, role, danh sach cac quyen
-  public String generateToken(Student student){
+  // Tao token chua thong tin user, role, danh sach cac quyen
+  public String generateToken(CustomUserDetails userDetails){
     Map<String, Object> claims = new HashMap<>();
-    claims.put("role", student.getRole().name());
-    claims.put("authorities", student.getAuthorities());
+    claims.put("fullname", userDetails.getUser().getFullname());
+    claims.put("gender", userDetails.getUser().getGender());
+    claims.put("role_id", userDetails.getUser().getRole().getName());
+    claims.put("mssv", userDetails.getMssv());
+    claims.put("birthday", userDetails.getBirthday());
+    claims.put("permissions", userDetails.getAuthorities());
 
     return Jwts.builder()
         .setClaims(claims)
-        .setSubject(student.getUsername())
+        .setSubject(userDetails.getUsername())
         .setIssuedAt(new Date(System.currentTimeMillis()))
         .setExpiration(new Date(System.currentTimeMillis() + 86400000))
         .signWith(getSigninKey())
         .compact();
   }
 
-  public List<String> extractAuthorities(String token) {
-    return extractClaim(token, claims -> claims.get("authorities", List.class));
-  }
 
   private SecretKey getSigninKey(){
     byte[] keyBytes = Decoders.BASE64URL.decode(SIGN_KEY);

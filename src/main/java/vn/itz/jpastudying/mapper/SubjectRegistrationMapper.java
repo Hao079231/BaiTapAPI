@@ -17,7 +17,8 @@ public interface SubjectRegistrationMapper {
       @Mapping(source = "studentResponse", target = "student"),
       @Mapping(source = "subjectResponse", target = "subject"),
       @Mapping(source = "dateRegisterResponse", target = "dateRegister"),
-      @Mapping(source = "statusResponse", target = "status")
+      @Mapping(source = "statusResponse", target = "status"),
+      @Mapping(source = "studyResultResponse", target = "studyResult")
   })
   @Named("mapSubjectRegistration")
   SubjectRegistration convertToSubjectRegistration(SubjectRegistrationForm subjectRegistrationForm);
@@ -27,7 +28,8 @@ public interface SubjectRegistrationMapper {
       @Mapping(source = "student", target = "studentResponse", qualifiedByName = "mapStudentDto"),
       @Mapping(source = "subject", target = "subjectResponse", qualifiedByName = "mapSubjectDto"),
       @Mapping(source = "dateRegister", target = "dateRegisterResponse"),
-      @Mapping(source = "status", target = "statusResponse")
+      @Mapping(source = "status", target = "statusResponse"),
+      @Mapping(source = "studyResult", target = "studyResultResponse")
   })
   @Named("subjectRegistrationDto")
   SubjectRegistrationDto convertToSubjectRegistrationResponse(

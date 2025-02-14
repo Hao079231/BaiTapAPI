@@ -8,16 +8,17 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import vn.itz.jpastudying.exceptions.ResourceNotFound;
+import vn.itz.jpastudying.service.CustomUserDetailService;
 import vn.itz.jpastudying.service.JwtService;
-import vn.itz.jpastudying.service.StudentDetailServiceImp;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -26,7 +27,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   private JwtService jwtService;
 
   @Autowired
-  private StudentDetailServiceImp studentDetailsService;
+  private CustomUserDetailService customUserDetailService;
 
   @Override
   protected void doFilterInternal(
@@ -51,34 +52,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     String username = jwtService.extractUsername(token);
 
     if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-      UserDetails studentDetails = studentDetailsService.loadUserByUsername(username);
+      UserDetails userDetails = customUserDetailService.loadUserByUsername(username);
 
-      if (jwtService.isValid(token, studentDetails)) {
-        List<?> rawAuthorities = jwtService.extractAuthorities(token);
-        List<SimpleGrantedAuthority> authorityList = rawAuthorities.stream()
-            .map(obj -> {
-              if (obj instanceof String) {
-                return new SimpleGrantedAuthority((String) obj);
-              } else if (obj instanceof java.util.Map) {
-                Object authority = ((java.util.Map<?, ?>) obj).get("authority");
-                return new SimpleGrantedAuthority(authority != null ? authority.toString() : "");
-              }
-              return null;
-            })
-            .filter(auth -> auth != null && !auth.getAuthority().isEmpty())
-            .collect(Collectors.toList());
-
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-            studentDetails, null, authorityList
-        );
-
-        authToken.setDetails(
-            new WebAuthenticationDetailsSource().buildDetails(request)
-        );
-        SecurityContextHolder.getContext().setAuthentication(authToken);
+      if (!jwtService.isValid(token, userDetails)) {
+        throw new ResourceNotFound("Token khong hop le hoac da het han", HttpStatus.NOT_FOUND);
       }
-    }
 
+      // Tao Authentication moi voi danh sach cac quyen
+      UsernamePasswordAuthenticationToken authenticationToken =
+          new UsernamePasswordAuthenticationToken(userDetails, null,
+              userDetails.getAuthorities());
+
+      authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+      // Luu Authentication vao SecurityContext
+      SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+    }
     filterChain.doFilter(request, response);
   }
+
 }

@@ -17,4 +17,5 @@ public class SubjectRegistrationDto {
   private SubjectDto subjectResponse;
   private String dateRegisterResponse;
   private String statusResponse;
+  private float studyResultResponse;
 }

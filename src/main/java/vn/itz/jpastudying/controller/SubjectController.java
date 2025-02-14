@@ -5,6 +5,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,6 +41,7 @@ public class SubjectController {
 
   // Lay thong tin mot khoa hoc
   @GetMapping("/{id}")
+  @PreAuthorize("hasAuthority('C_GET')")
   public ResponseEntity<ApiMessageDto<SubjectDto>> getSubjectById(@PathVariable int id) {
     ApiMessageDto<SubjectDto> response = ApiResponeUtils.results("Thong tin mot khoa hoc",
         subjectDaoService.findSubjectById(id));
@@ -48,6 +50,7 @@ public class SubjectController {
 
   // Them thong tin mot khoa hoc
   @PostMapping("/create")
+  @PreAuthorize("hasAuthority('C_CREATE')")
   public ResponseEntity<ApiMessageDto<SubjectDto>> createSubject(@Valid @RequestBody SubjectCreateForm subject) {
     ApiMessageDto<SubjectDto> response = ApiResponeUtils.results("Them thong tin khoa hoc thanh cong",
         subjectDaoService.createSubject(subject));
@@ -56,6 +59,7 @@ public class SubjectController {
 
   // Xoa thong tin mot khoa hoc
   @DeleteMapping("/delete/{id}")
+  @PreAuthorize("hasAuthority('C_DEL')")
   public ResponseEntity<ApiMessageDto<Void>> deleteSubject(@PathVariable int id) {
     subjectDaoService.deleteSubject(id);
     ApiMessageDto<Void> response = ApiResponeUtils.results("Xoa thong tin khoa hoc thanh cong",
@@ -65,6 +69,7 @@ public class SubjectController {
 
   // Cap nhat thong tin mot khoa hoc
   @PutMapping("/update/{id}")
+  @PreAuthorize("hasAuthority('C_UPD')")
   public ResponseEntity<ApiMessageDto<SubjectDto>> updateSubject(@PathVariable int id, @Valid @RequestBody SubjectUpdateForm subject) {
     ApiMessageDto<SubjectDto> response = ApiResponeUtils.results("Cap nhat thong tin khoa hoc thanh cong",
         subjectDaoService.updateSubject(id, subject));
@@ -73,6 +78,7 @@ public class SubjectController {
 
   // Loc va phan trang khoa hoc
   @GetMapping("/pagination")
+  @PreAuthorize("hasAuthority('C_GET')")
   public ResponseEntity<ApiMessageDto<ShowPagedResults<SubjectDto>>> getPagedSubjects(
       SubjectCriteria subjectCriteria, Pageable pageable) {
 
@@ -84,6 +90,7 @@ public class SubjectController {
 
   // Loc va phan trang danh sach khoa hoc tu id sinh vien va ngay nhap vao
   @GetMapping("/list-by-student-and-date")
+  @PreAuthorize("hasAuthority('C_GET')")
   public ResponseEntity<ApiMessageDto<ShowPagedResults<SubjectRegistrationDto>>> getSubjectsByStudentIdAndDate(
       SubjectRegistrationCriteria criteria, Pageable pageable) {
 

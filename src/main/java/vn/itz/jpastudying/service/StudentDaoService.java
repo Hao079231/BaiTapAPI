@@ -1,7 +1,9 @@
 package vn.itz.jpastudying.service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -108,6 +110,7 @@ public class StudentDaoService {
     registration.setSubject(subject);
     registration.setDateRegister(new Date());
     registration.setStatus(SubjectRegistration.Status.PENDING);
+    registration.setStudyResult(0.0f);
 
     subjectRegistrationRepository.save(registration);
 
@@ -156,4 +159,30 @@ public class StudentDaoService {
     return subjectRegistrationMapper.convertToSubjectRegistrationResponse(registration);
   }
 
+  // Cap nhat diem cua mot sinh vien
+  @Transactional
+  public SubjectRegistrationDto updateStudentScore(int studentId, int subjectId, float result){
+    SubjectRegistration registration = (SubjectRegistration) subjectRegistrationRepository.findByStudentIdAndSubjectId(studentId, subjectId)
+        .orElseThrow(() -> new ResourceNotFound("Khong tim thay sinh vien trong khoa hoc", HttpStatus.NOT_FOUND));
+    registration.setStudyResult(result);
+    subjectRegistrationRepository.save(registration);
+    return subjectRegistrationMapper.convertToSubjectRegistrationResponse(registration);
+  }
+
+
+  // Ham bao cao tinh hinh hoc tap
+  public Map<String, Object> getStudentReport() {
+    List<Object[]> results = studentRepository.getReportData();
+
+    Object[] result = results.get(0);
+
+    Map<String, Object> report = new HashMap<>();
+    report.put("tongKhoaHoc", ((Number) result[0]).intValue());
+    report.put("tongSinhVien", ((Number) result[1]).intValue());
+    report.put("diemTrungBinh", ((Number)result[2]).floatValue());
+    report.put("sinhVienNam", ((Number) result[3]).intValue());
+    report.put("sinhVienNu", ((Number) result[4]).intValue());
+
+    return report;
+  }
 }
