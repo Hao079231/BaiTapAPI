@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import vn.itz.jpastudying.Dto.ApiMessageDto;
 import vn.itz.jpastudying.Dto.ShowPagedResults;
 import vn.itz.jpastudying.Dto.StudentDto;
+import vn.itz.jpastudying.Dto.StudyReportDto;
 import vn.itz.jpastudying.Dto.SubjectRegistrationDto;
 import vn.itz.jpastudying.form.student.StudentCreateForm;
 import vn.itz.jpastudying.form.student.StudentUpdateForm;
@@ -163,11 +164,18 @@ public class StudentController {
     return ResponseEntity.ok(response);
   }
 
-  @GetMapping("/report")
-  @PreAuthorize("hasAuthority('C_GET')")
-  public ResponseEntity<ApiMessageDto<Map<String, Object>>> getStudentReport() {
-    Map<String, Object> reportData = studentDaoService.getStudentReport();
-    ApiMessageDto<Map<String, Object>> response = ApiResponeUtils.results("Bao cao tinh hinh hoc tap", reportData);
-    return ResponseEntity.ok(response);
-  }
+//  @GetMapping("/report")
+//  @PreAuthorize("hasAuthority('C_GET')")
+//  public ResponseEntity<ApiMessageDto<Map<String, Object>>> getStudentReport() {
+//    Map<String, Object> reportData = studentDaoService.getStudentReport();
+//    ApiMessageDto<Map<String, Object>> response = ApiResponeUtils.results("Bao cao tinh hinh hoc tap", reportData);
+//    return ResponseEntity.ok(response);
+//  }
+@GetMapping("/report")
+@PreAuthorize("hasAuthority('C_GET')")
+public ResponseEntity<ApiMessageDto<StudyReportDto>> getStudentReport() {
+  StudyReportDto reportData = studentDaoService.getStudentReport();
+  ApiMessageDto<StudyReportDto> response = ApiResponeUtils.results("Bao cao tinh hinh hoc tap", reportData);
+  return ResponseEntity.ok(response);
+}
 }

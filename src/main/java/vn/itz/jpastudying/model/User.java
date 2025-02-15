@@ -32,4 +32,10 @@ public class User {
   @ManyToOne
   @JoinColumn(name = "role_id", nullable = false)
   private Role role;
+
+  @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  private Students students;
+
+  @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  private Admin admin;
 }

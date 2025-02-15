@@ -33,6 +33,10 @@ public class JwtService {
     return extractClaim(token, claims -> claims.get("role", String.class));
   }
 
+  public boolean extractIsSuperAdmin(String token) {
+    return extractClaim(token, claims -> claims.get("isSuperAdmin", Boolean.class));
+  }
+
   public boolean isValid(String token, UserDetails student){
     String username = extractUsername(token);
     return (username.equals(student.getUsername())) && !isTokenExpired(token);
@@ -68,6 +72,9 @@ public class JwtService {
     claims.put("mssv", userDetails.getMssv());
     claims.put("birthday", userDetails.getBirthday());
     claims.put("permissions", userDetails.getAuthorities());
+    if ("ADMIN".equalsIgnoreCase(userDetails.getUser().getRole().getName())){
+      claims.put("isSuperAdmin", userDetails.getUser().getAdmin().isSuperAdmin());
+    }
 
     return Jwts.builder()
         .setClaims(claims)

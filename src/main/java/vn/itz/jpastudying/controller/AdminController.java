@@ -3,37 +3,30 @@ package vn.itz.jpastudying.controller;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vn.itz.jpastudying.Dto.ApiMessageDto;
 import vn.itz.jpastudying.Dto.AuthenticationDto;
-import vn.itz.jpastudying.form.user.UserCreateForm;
-import vn.itz.jpastudying.service.AuthenticationService;
+import vn.itz.jpastudying.form.admin.AdminCreateForm;
+import vn.itz.jpastudying.service.AdminDaoService;
 import vn.itz.jpastudying.utils.ApiResponeUtils;
 
 @RestController
-@RequestMapping("/auth")
-public class AuthenticationController {
+@RequestMapping("/admin")
+public class AdminController {
 
   @Autowired
-  private AuthenticationService authService;
+  private AdminDaoService adminDaoService;
 
-  @PostMapping("/register")
-  public ResponseEntity<ApiMessageDto<AuthenticationDto>> register(@Valid @RequestBody UserCreateForm request) {
+  @PostMapping("/create")
+  @PreAuthorize("hasAuthority('C_CREATE_ADMIN')")
+  public ResponseEntity<ApiMessageDto<AuthenticationDto>> createAdmin(@Valid @RequestBody AdminCreateForm request){
     ApiMessageDto<AuthenticationDto> response = ApiResponeUtils.results(
         "Dang ky thanh cong",
-        authService.register(request)
-    );
-    return ResponseEntity.ok(response);
-  }
-
-  @PostMapping("/token/login")
-  public ResponseEntity<ApiMessageDto<AuthenticationDto>> login(@RequestBody UserCreateForm request) {
-    ApiMessageDto<AuthenticationDto> response = ApiResponeUtils.results(
-        "Dang nhap thanh cong",
-        authService.authenticate(request)
+        adminDaoService.createAdmin(request)
     );
     return ResponseEntity.ok(response);
   }

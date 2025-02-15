@@ -1,9 +1,8 @@
-package vn.itz.jpastudying.form.user;
+package vn.itz.jpastudying.form.admin;
 
 import io.swagger.annotations.ApiModelProperty;
-import java.util.Date;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Past;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,8 +12,7 @@ import vn.itz.jpastudying.validation.GioiTinhValidation;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserCreateForm {
-
+public class AdminCreateForm {
   @ApiModelProperty(value = "Ten dang nhap", example = "vana", required = true)
   @NotEmpty(message = "Username khong the trong")
   private String userNameValue;
@@ -41,11 +39,10 @@ public class UserCreateForm {
 
   private String avatarValue;
 
-  @ApiModelProperty(value = "MSSV", example = "20230001", required = true)
-  @NotEmpty(message = "MSSV khong the trong")
-  private String mssvValue;
+  @ApiModelProperty(value = "Quyen han cua admin: 0, 1, 2, 3", example = "1", required = true)
+  @NotNull(message = "Admin phai co cap do: 0, 1, 2,...")
+  private Integer levelValue;
 
-  @ApiModelProperty(value = "Ngay sinh (phai o trong qua khu)", example = "2001-02-20", required = true)
-  @Past(message = "Ngay sinh phai la o qua khu")
-  private Date birthDateValue;
+  @ApiModelProperty(value = "Quyen toi cao cua admin: true/ false", example = "true", required = true)
+  private Boolean isSuperAdminValue;
 }

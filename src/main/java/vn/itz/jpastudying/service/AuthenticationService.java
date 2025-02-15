@@ -1,5 +1,6 @@
 package vn.itz.jpastudying.service;
 
+import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -9,7 +10,6 @@ import org.springframework.stereotype.Service;
 import vn.itz.jpastudying.Dto.AuthenticationDto;
 import vn.itz.jpastudying.exceptions.DuplicateEntityException;
 import vn.itz.jpastudying.exceptions.ResourceNotFound;
-import vn.itz.jpastudying.form.student.StudentActivateForm;
 import vn.itz.jpastudying.form.user.UserCreateForm;
 import vn.itz.jpastudying.model.CustomUserDetails;
 import vn.itz.jpastudying.model.Role;
@@ -42,11 +42,13 @@ public class AuthenticationService {
   @Autowired
   private CustomUserDetailService customUserDetailService;
 
+  @Transactional
   public AuthenticationDto register(UserCreateForm request) {
-    Role role = roleRepository.findById(request.getRoleValue()).orElseThrow(
+    Role role = roleRepository.findRoleByKind(request.getRoleValue()).orElseThrow(
         () -> new ResourceNotFound("Vai tro cua user khong ton tai", HttpStatus.NOT_FOUND));
     if (userRepository.existsByUsername(request.getUserNameValue()))
       throw new DuplicateEntityException("Username da ton tai");
+
 
     User user = new User();
     user.setUsername(request.getUserNameValue());
@@ -55,27 +57,23 @@ public class AuthenticationService {
     user.setGender(request.getGenderValue());
     user.setAvatar(request.getAvatarValue() != null ? request.getAvatarValue() : "");
     user.setRole(role);
+
     user = userRepository.save(user);
 
-    return new AuthenticationDto(true, "Dang ky thanh cong, vui long kich hoat tai khoan sinh vien");
-  }
-
-  // Kich hoat user thanh student
-  public AuthenticationDto activateStudent(StudentActivateForm request) {
-    User user = userRepository.findById(request.getUserId())
-        .orElseThrow(() -> new ResourceNotFound("User khong ton tai", HttpStatus.NOT_FOUND));
-
-    if (studentsRepository.findByUser(user).isPresent()) {
-      throw new DuplicateEntityException("User nay da la sinh vien");
-    }
-
     Students student = new Students();
+    student.setId(user.getId());
     student.setUser(user);
     student.setMssv(request.getMssvValue());
     student.setBirthday(request.getBirthDateValue());
+
+    // Lien ket student voi user
+    user.setStudents(student);
+
+    // Luu lai user de cascade luu student
+    userRepository.save(user);
     studentsRepository.save(student);
 
-    return new AuthenticationDto(true, "Kich hoat tai khoan sinh vien thanh cong");
+    return new AuthenticationDto(true, "Dang ky thanh cong, thong tin da duoc luu vao he thong");
   }
 
   public AuthenticationDto authenticate(UserCreateForm request){
