@@ -172,21 +172,6 @@ public class StudentDaoService {
 
 
   // Ham bao cao tinh hinh hoc tap
-//  public Map<String, Object> getStudentReport() {
-//    List<Object[]> results = studentRepository.getReportData();
-//
-//    Object[] result = results.get(0);
-//
-//    Map<String, Object> report = new HashMap<>();
-//    report.put("tongKhoaHoc", ((Number) result[0]).intValue());
-//    report.put("tongSinhVien", ((Number) result[1]).intValue());
-//    report.put("diemTrungBinh", ((Number)result[2]).floatValue());
-//    report.put("sinhVienNam", ((Number) result[3]).intValue());
-//    report.put("sinhVienNu", ((Number) result[4]).intValue());
-//
-//    return report;
-//  }
-
   public StudyReportDto getStudentReport() {
     return studentRepository.getReportData();
   }

@@ -164,13 +164,7 @@ public class StudentController {
     return ResponseEntity.ok(response);
   }
 
-//  @GetMapping("/report")
-//  @PreAuthorize("hasAuthority('C_GET')")
-//  public ResponseEntity<ApiMessageDto<Map<String, Object>>> getStudentReport() {
-//    Map<String, Object> reportData = studentDaoService.getStudentReport();
-//    ApiMessageDto<Map<String, Object>> response = ApiResponeUtils.results("Bao cao tinh hinh hoc tap", reportData);
-//    return ResponseEntity.ok(response);
-//  }
+
 @GetMapping("/report")
 @PreAuthorize("hasAuthority('C_GET')")
 public ResponseEntity<ApiMessageDto<StudyReportDto>> getStudentReport() {
