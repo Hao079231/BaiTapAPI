@@ -10,7 +10,7 @@ import lombok.*;
 @Getter
 @Setter
 @Table(name = "students")
-public class Students {
+public class Students extends Auditable{
   @Id
   private Long id;
 

@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @Setter
-public class Admin {
+public class Admin extends Auditable{
   @Id
   private Long id;
 

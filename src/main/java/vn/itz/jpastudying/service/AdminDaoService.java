@@ -1,5 +1,6 @@
 package vn.itz.jpastudying.service;
 
+import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import vn.itz.jpastudying.form.admin.AdminCreateForm;
 import vn.itz.jpastudying.model.Admin;
 import vn.itz.jpastudying.model.Role;
 import vn.itz.jpastudying.model.User;
+import vn.itz.jpastudying.projections.AdminInfoProjection;
 import vn.itz.jpastudying.repository.AdminRepository;
 import vn.itz.jpastudying.repository.RoleRepository;
 import vn.itz.jpastudying.repository.UserRepository;
@@ -59,5 +61,9 @@ public class AdminDaoService {
     adminRepository.save(admin);
 
     return new AuthenticationDto(true, "Dang ky admin thanh cong, thong tin da duoc luu vao he thong");
+  }
+
+  public List<AdminInfoProjection> getAllAdminInfo(){
+    return adminRepository.findAllAdminInfo();
   }
 }

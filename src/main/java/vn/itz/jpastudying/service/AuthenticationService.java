@@ -1,5 +1,6 @@
 package vn.itz.jpastudying.service;
 
+import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import vn.itz.jpastudying.model.CustomUserDetails;
 import vn.itz.jpastudying.model.Role;
 import vn.itz.jpastudying.model.Students;
 import vn.itz.jpastudying.model.User;
+import vn.itz.jpastudying.projections.StudentInfoProjection;
 import vn.itz.jpastudying.repository.RoleRepository;
 import vn.itz.jpastudying.repository.StudentsRepository;
 import vn.itz.jpastudying.repository.UserRepository;
@@ -89,5 +91,9 @@ public class AuthenticationService {
     String token = jwtService.generateToken(userDetails);
 
     return new AuthenticationDto(true, token);
+  }
+
+  public List<StudentInfoProjection> getAllStudentInfo(){
+    return studentsRepository.findAllStudentInfo();
   }
 }
