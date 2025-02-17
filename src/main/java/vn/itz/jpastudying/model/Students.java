@@ -10,13 +10,13 @@ import lombok.*;
 @Getter
 @Setter
 @Table(name = "students")
-public class Students {
+public class Students extends Auditable{
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @OneToOne
-  @JoinColumn(name = "user_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_students_user"))
+  @MapsId
+  @JoinColumn(name = "id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_students_user"))
   private User user;
 
   @Column(nullable = false, unique = true)

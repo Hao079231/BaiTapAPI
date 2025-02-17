@@ -8,14 +8,16 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @Setter
-public class Admin {
+public class Admin extends Auditable{
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @OneToOne
-  @JoinColumn(name = "user_id", referencedColumnName = "id")
+  @MapsId
+  @JoinColumn(name = "id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_admin_user"))
   private User user;
 
   private Integer level;
+
+  private boolean isSuperAdmin;
 }

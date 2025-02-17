@@ -1,8 +1,8 @@
 package vn.itz.jpastudying.filter;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -50,6 +51,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     String username = jwtService.extractUsername(token);
+    boolean isSuperAdmin = jwtService.extractIsSuperAdmin(token);
 
     if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
       UserDetails userDetails = customUserDetailService.loadUserByUsername(username);
@@ -58,10 +60,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         throw new ResourceNotFound("Token khong hop le hoac da het han", HttpStatus.NOT_FOUND);
       }
 
+      List<GrantedAuthority> authorities = new ArrayList<>(userDetails.getAuthorities());
+
+      if (isSuperAdmin) {
+        authorities.add(() -> "C_CREATE_ADMIN");
+      }
+
       // Tao Authentication moi voi danh sach cac quyen
       UsernamePasswordAuthenticationToken authenticationToken =
           new UsernamePasswordAuthenticationToken(userDetails, null,
-              userDetails.getAuthorities());
+              authorities);
 
       authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
