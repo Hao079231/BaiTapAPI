@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vn.itz.jpastudying.Dto.ApiMessageDto;
 import vn.itz.jpastudying.Dto.AuthenticationDto;
+import vn.itz.jpastudying.Dto.StudentsDto;
+import vn.itz.jpastudying.form.students.StudentsCreateForm;
 import vn.itz.jpastudying.form.user.UserCreateForm;
 import vn.itz.jpastudying.projections.StudentInfoProjection;
 import vn.itz.jpastudying.service.AuthenticationService;
@@ -25,8 +27,8 @@ public class AuthenticationController {
   private AuthenticationService authService;
 
   @PostMapping("/register")
-  public ResponseEntity<ApiMessageDto<AuthenticationDto>> register(@Valid @RequestBody UserCreateForm request) {
-    ApiMessageDto<AuthenticationDto> response = ApiResponeUtils.results(
+  public ResponseEntity<ApiMessageDto<StudentsDto>> register(@Valid @RequestBody StudentsCreateForm request) {
+    ApiMessageDto<StudentsDto> response = ApiResponeUtils.results(
         "Dang ky thanh cong",
         authService.register(request)
     );

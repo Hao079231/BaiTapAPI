@@ -1,4 +1,4 @@
-package vn.itz.jpastudying.service;
+package vn.itz.jpastudying.config;
 
 import java.util.Optional;
 import org.springframework.data.domain.AuditorAware;

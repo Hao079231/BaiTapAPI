@@ -9,13 +9,15 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import vn.itz.jpastudying.Dto.AuthenticationDto;
+import vn.itz.jpastudying.Dto.StudentsDto;
 import vn.itz.jpastudying.exceptions.DuplicateEntityException;
 import vn.itz.jpastudying.exceptions.ResourceNotFound;
+import vn.itz.jpastudying.form.students.StudentsCreateForm;
 import vn.itz.jpastudying.form.user.UserCreateForm;
+import vn.itz.jpastudying.mapper.StudentsMapper;
 import vn.itz.jpastudying.model.CustomUserDetails;
 import vn.itz.jpastudying.model.Role;
 import vn.itz.jpastudying.model.Students;
-import vn.itz.jpastudying.model.User;
 import vn.itz.jpastudying.projections.StudentInfoProjection;
 import vn.itz.jpastudying.repository.RoleRepository;
 import vn.itz.jpastudying.repository.StudentsRepository;
@@ -44,38 +46,21 @@ public class AuthenticationService {
   @Autowired
   private CustomUserDetailService customUserDetailService;
 
+  @Autowired
+  private StudentsMapper studentsMapper;
+
   @Transactional
-  public AuthenticationDto register(UserCreateForm request) {
-    Role role = roleRepository.findRoleByKind(request.getRoleValue()).orElseThrow(
-        () -> new ResourceNotFound("Vai tro cua user khong ton tai", HttpStatus.NOT_FOUND));
+  public StudentsDto register(StudentsCreateForm request) {
+    Role role = roleRepository.findRoleByKind(0).orElseThrow(()
+    -> new ResourceNotFound("Vai tro nay khong ton tai", HttpStatus.NOT_FOUND));
     if (userRepository.existsByUsername(request.getUserNameValue()))
       throw new DuplicateEntityException("Username da ton tai");
 
-
-    User user = new User();
-    user.setUsername(request.getUserNameValue());
-    user.setFullname(request.getFullNameValue());
-    user.setPassword(passwordEncoder.encode(request.getPassWordValue()));
-    user.setGender(request.getGenderValue());
-    user.setAvatar(request.getAvatarValue() != null ? request.getAvatarValue() : "");
-    user.setRole(role);
-
-    user = userRepository.save(user);
-
-    Students student = new Students();
-    student.setId(user.getId());
-    student.setUser(user);
-    student.setMssv(request.getMssvValue());
-    student.setBirthday(request.getBirthDateValue());
-
-    // Lien ket student voi user
-    user.setStudents(student);
-
-    // Luu lai user de cascade luu student
-    userRepository.save(user);
-    studentsRepository.save(student);
-
-    return new AuthenticationDto(true, "Dang ky thanh cong, thong tin da duoc luu vao he thong");
+    Students student = studentsMapper.convertToStudent(request);
+    student.getUser().setAvatar("ImageEmpty");
+    student.getUser().setPassword(passwordEncoder.encode(request.getPassWordValue()));
+    student.getUser().setRole(role);
+    return studentsMapper.convertToStudentResponse(studentsRepository.save(student));
   }
 
   public AuthenticationDto authenticate(UserCreateForm request){

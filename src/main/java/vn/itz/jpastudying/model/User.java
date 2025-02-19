@@ -20,7 +20,6 @@ public class User extends Auditable{
   @Column(nullable = false)
   private String password;
 
-  @Column(nullable = false)
   private String avatar;
 
   @Column(nullable = false)
@@ -32,10 +31,4 @@ public class User extends Auditable{
   @ManyToOne
   @JoinColumn(name = "role_id", nullable = false)
   private Role role;
-
-  @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Students students;
-
-  @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Admin admin;
 }

@@ -1,9 +1,9 @@
-package vn.itz.jpastudying.form.admin;
+package vn.itz.jpastudying.form.lecturer;
 
 import io.swagger.annotations.ApiModelProperty;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,30 +12,29 @@ import vn.itz.jpastudying.validation.GioiTinhValidation;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AdminCreateForm {
-  @ApiModelProperty(value = "Ten dang nhap", example = "vana", required = true)
-  @NotEmpty(message = "Username khong the trong")
+public class LecturerCreateForm {
+  @ApiModelProperty(value = "Ten user", example = "vana", required = true)
+  @NotEmpty(message = "User khong the trong")
   private String userNameValue;
 
   @ApiModelProperty(value = "Ten day du", example = "Nguyen Van A", required = true)
   @NotEmpty(message = "Fullname khong the trong")
   private String fullNameValue;
 
-
   @ApiModelProperty(value = "Mat khau", example = "Vana@03190", required = true)
   @NotEmpty(message = "Mat khau khong the trong")
+  @Size(min = 6, message = "Mat khau phai it nhat co 6 ki tu")
   @Pattern(
       regexp = "^(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&]).{6,}$",
-      message = "Mat khau phải co 1 ky tu viet hoa, 1 ky tu dac biet va toi thieu co 6 ky tu"
+      message = "Mat khau phai co it nhat 1 ki tu viet hoa, 1 ki tu dac biet va toi thieu phai co 6 ki tu"
   )
   private String passWordValue;
 
-  @ApiModelProperty(value = "Gioi tinh: 1 - Nam, 2 - Nu, 3 - Khac", example = "1", required = false)
+  @ApiModelProperty(value = "Gioi tinh: 1 - nam, 2 - nu, 3 - khac", example = "1", required = false)
   @GioiTinhValidation
   private String genderValue;
 
-
-  @ApiModelProperty(value = "Quyen han cua admin: 0, 1, 2, 3", example = "1", required = true)
-  @NotNull(message = "Admin phai co cap do: 0, 1, 2,...")
-  private Integer levelValue;
+  @ApiModelProperty(value = "Chuyen nganh cua giao vien", example = "Cong nghe phan mem", required = true)
+  @NotEmpty(message = "Chuyen nganh khong the trong")
+  private String careerValue;
 }

@@ -34,7 +34,7 @@ public class JwtService {
   }
 
   public boolean extractIsSuperAdmin(String token) {
-    return extractClaim(token, claims -> claims.get("isSuperAdmin", Boolean.class));
+    return extractClaim(token, claims -> claims.get("superAdmin", Boolean.class));
   }
 
   public boolean isValid(String token, UserDetails student){
@@ -73,7 +73,7 @@ public class JwtService {
     claims.put("birthday", userDetails.getBirthday());
     claims.put("permissions", userDetails.getAuthorities());
     if ("ADMIN".equalsIgnoreCase(userDetails.getUser().getRole().getName())){
-      claims.put("isSuperAdmin", userDetails.getUser().getAdmin().isSuperAdmin());
+      claims.put("superAdmin", userDetails.isSuperAdmin());
     }
 
     return Jwts.builder()

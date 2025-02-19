@@ -6,13 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import vn.itz.jpastudying.Dto.AuthenticationDto;
+import vn.itz.jpastudying.Dto.AdminDto;
 import vn.itz.jpastudying.exceptions.DuplicateEntityException;
 import vn.itz.jpastudying.exceptions.ResourceNotFound;
 import vn.itz.jpastudying.form.admin.AdminCreateForm;
+import vn.itz.jpastudying.mapper.AdminMapper;
 import vn.itz.jpastudying.model.Admin;
 import vn.itz.jpastudying.model.Role;
-import vn.itz.jpastudying.model.User;
 import vn.itz.jpastudying.projections.AdminInfoProjection;
 import vn.itz.jpastudying.repository.AdminRepository;
 import vn.itz.jpastudying.repository.RoleRepository;
@@ -32,35 +32,23 @@ public class AdminDaoService {
   @Autowired
   private PasswordEncoder passwordEncoder;
 
+  @Autowired
+  private AdminMapper adminMapper;
+
   @Transactional
-  public AuthenticationDto createAdmin(AdminCreateForm request){
-    Role role = roleRepository.findRoleByKind(request.getRoleValue()).orElseThrow(
-        () -> new ResourceNotFound("Vai tro cua user khong ton tai", HttpStatus.NOT_FOUND));
+  public AdminDto createAdmin(AdminCreateForm request){
+    Role role = roleRepository.findRoleByKind(1).orElseThrow(
+        () -> new ResourceNotFound("Vai tro admin cua user khong ton tai", HttpStatus.NOT_FOUND));
     if (userRepository.existsByUsername(request.getUserNameValue()))
       throw new DuplicateEntityException("Username da ton tai");
 
-    User user = new User();
-    user.setUsername(request.getUserNameValue());
-    user.setFullname(request.getFullNameValue());
-    user.setPassword(passwordEncoder.encode(request.getPassWordValue()));
-    user.setGender(request.getGenderValue());
-    user.setAvatar(request.getAvatarValue() != null ? request.getAvatarValue() : "");
-    user.setRole(role);
+    Admin admin = adminMapper.convertToAdmin(request);
+    admin.getUser().setAvatar("ImageEmpty");
+    admin.getUser().setPassword(passwordEncoder.encode(request.getPassWordValue()));
+    admin.getUser().setRole(role);
+    admin.setSuperAdmin(false);
 
-    user = userRepository.save(user);
-
-    Admin admin = new Admin();
-    admin.setId(user.getId());
-    admin.setUser(user);
-    admin.setLevel(request.getLevelValue());
-    admin.setSuperAdmin(request.getIsSuperAdminValue());
-
-    user.setAdmin(admin);
-
-    userRepository.save(user);
-    adminRepository.save(admin);
-
-    return new AuthenticationDto(true, "Dang ky admin thanh cong, thong tin da duoc luu vao he thong");
+    return adminMapper.convertToAdminResponse(adminRepository.save(admin));
   }
 
   public List<AdminInfoProjection> getAllAdminInfo(){
