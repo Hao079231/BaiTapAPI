@@ -12,5 +12,5 @@ import lombok.Setter;
 public class LecturerRegisterTeachingDto {
   private Long lecturerIdValue;
   private int courseIdValue;
-  private Long periodId;
+  private Long periodIdValue;
 }
