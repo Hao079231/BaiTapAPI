@@ -1,6 +1,7 @@
 package vn.itz.jpastudying.model;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -19,14 +20,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 public class CustomUserDetails implements UserDetails {
   private User user;
   private String mssv;
-  private java.util.Date birthday;
+  private Date birthday;
   private List<GrantedAuthority> authorities;
+  private boolean superAdmin;
 
-  public CustomUserDetails(User user, Students student) {
+  public CustomUserDetails(User user, Students student, Admin admin) {
     this.user = user;
     this.mssv = student != null ? student.getMssv() : null;
     this.birthday = student != null ? student.getBirthday() : null;
     this.authorities = mapPermissionsToAuthorities(user.getRole().getPermissions());
+    this.superAdmin = admin != null && admin.isSuperAdmin();
   }
 
   private List<GrantedAuthority> mapPermissionsToAuthorities(Set<Permission> permissions) {

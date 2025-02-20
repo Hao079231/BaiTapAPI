@@ -8,9 +8,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import vn.itz.jpastudying.model.Admin;
 import vn.itz.jpastudying.model.CustomUserDetails;
 import vn.itz.jpastudying.model.Students;
 import vn.itz.jpastudying.model.User;
+import vn.itz.jpastudying.repository.AdminRepository;
 import vn.itz.jpastudying.repository.RoleRepository;
 import vn.itz.jpastudying.repository.StudentsRepository;
 import vn.itz.jpastudying.repository.UserRepository;
@@ -29,6 +31,9 @@ public class CustomUserDetailService implements UserDetailsService {
   @Autowired
   private StudentsRepository studentsRepository;
 
+  @Autowired
+  private AdminRepository adminRepository;
+
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -38,7 +43,10 @@ public class CustomUserDetailService implements UserDetailsService {
     Optional<Students> studentOpt = studentsRepository.findByUser(user);
     Students student = studentOpt.orElse(null);
 
-    return new CustomUserDetails(user, student);
+    Optional<Admin> adminOpt = adminRepository.findByUser(user);
+    Admin admin = adminOpt.orElse(null);
+
+    return new CustomUserDetails(user, student, admin);
   }
 
   public CustomUserDetails validateUser(String username, String rawPassword) {

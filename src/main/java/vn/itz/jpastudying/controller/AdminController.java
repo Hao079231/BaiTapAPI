@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import vn.itz.jpastudying.Dto.AdminDto;
 import vn.itz.jpastudying.Dto.ApiMessageDto;
 import vn.itz.jpastudying.Dto.AuthenticationDto;
 import vn.itz.jpastudying.form.admin.AdminCreateForm;
@@ -26,8 +27,8 @@ public class AdminController {
 
   @PostMapping("/create")
   @PreAuthorize("hasAuthority('C_CREATE_ADMIN')")
-  public ResponseEntity<ApiMessageDto<AuthenticationDto>> createAdmin(@Valid @RequestBody AdminCreateForm request){
-    ApiMessageDto<AuthenticationDto> response = ApiResponeUtils.results(
+  public ResponseEntity<ApiMessageDto<AdminDto>> createAdmin(@Valid @RequestBody AdminCreateForm request){
+    ApiMessageDto<AdminDto> response = ApiResponeUtils.results(
         "Dang ky thanh cong",
         adminDaoService.createAdmin(request)
     );

@@ -19,5 +19,5 @@ public class Admin extends Auditable{
 
   private Integer level;
 
-  private boolean isSuperAdmin;
+  private boolean superAdmin;
 }
