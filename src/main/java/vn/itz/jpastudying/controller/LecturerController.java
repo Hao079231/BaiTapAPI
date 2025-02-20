@@ -1,14 +1,15 @@
 package vn.itz.jpastudying.controller;
 
-import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vn.itz.jpastudying.Dto.ApiMessageDto;
@@ -48,8 +49,8 @@ public class LecturerController {
   // Ham lay danh sach Period criteria
   @GetMapping("/period/list")
   public ResponseEntity<ApiMessageDto<ShowPagedResults<PeriodDto>>> getPeriods(PeriodCriteria periodCriteria,
-      Pageable pageable){
-    ApiMessageDto<ShowPagedResults<PeriodDto>> response = periodFeignClient.getPeriodsByCriteria(periodCriteria, pageable);
+      Pageable pageable, @RequestHeader("Authorization") String token){
+    ApiMessageDto<ShowPagedResults<PeriodDto>> response = periodFeignClient.getPeriodsByCriteria(periodCriteria, pageable, token);
     return ResponseEntity.ok(response);
   }
 

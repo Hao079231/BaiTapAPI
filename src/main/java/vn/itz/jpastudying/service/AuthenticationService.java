@@ -74,7 +74,6 @@ public class AuthenticationService {
     );
 
     String token = jwtService.generateToken(userDetails);
-
     return new AuthenticationDto(true, token);
   }
 

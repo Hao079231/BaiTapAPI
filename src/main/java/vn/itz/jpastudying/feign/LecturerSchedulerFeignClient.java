@@ -1,5 +1,6 @@
 package vn.itz.jpastudying.feign;
 
+import javax.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,5 +12,5 @@ import vn.itz.jpastudying.form.lecturer.LecturerRegisterTeachingForm;
 public interface LecturerSchedulerFeignClient {
 
   @PostMapping("/create")
-  ApiMessageDto<LecturerRegisterTeachingDto> registerTeaching(@RequestBody LecturerRegisterTeachingForm request);
+  ApiMessageDto<LecturerRegisterTeachingDto> registerTeaching(@Valid @RequestBody LecturerRegisterTeachingForm request);
 }
