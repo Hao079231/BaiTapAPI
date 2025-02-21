@@ -1,13 +1,14 @@
 package vn.itz.jpastudying.controller;
 
-import io.swagger.annotations.Api;
 import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vn.itz.jpastudying.Dto.ApiMessageDto;
@@ -17,6 +18,8 @@ import vn.itz.jpastudying.form.students.StudentsCreateForm;
 import vn.itz.jpastudying.form.user.UserCreateForm;
 import vn.itz.jpastudying.projections.StudentInfoProjection;
 import vn.itz.jpastudying.service.AuthenticationService;
+import vn.itz.jpastudying.service.CustomUserDetailService;
+import vn.itz.jpastudying.service.JwtService;
 import vn.itz.jpastudying.utils.ApiResponeUtils;
 
 @RestController
@@ -25,6 +28,12 @@ public class AuthenticationController {
 
   @Autowired
   private AuthenticationService authService;
+
+  @Autowired
+  private JwtService jwtService;
+
+  @Autowired
+  private CustomUserDetailService userDetailService;
 
   @PostMapping("/register")
   public ResponseEntity<ApiMessageDto<StudentsDto>> register(@Valid @RequestBody StudentsCreateForm request) {

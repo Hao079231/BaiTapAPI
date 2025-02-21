@@ -68,7 +68,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
       // Tao Authentication moi voi danh sach cac quyen
       UsernamePasswordAuthenticationToken authenticationToken =
-          new UsernamePasswordAuthenticationToken(userDetails, null,
+          new UsernamePasswordAuthenticationToken(userDetails, token,
               authorities);
 
       authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
