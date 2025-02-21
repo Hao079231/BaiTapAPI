@@ -34,7 +34,11 @@ public class JwtService {
   }
 
   public boolean extractIsSuperAdmin(String token) {
-    return extractClaim(token, claims -> claims.get("superAdmin", Boolean.class));
+    String role = extractRole(token);
+    if ("ADMIN".equalsIgnoreCase(role)) {
+      return extractClaim(token, claims -> claims.get("superAdmin", Boolean.class));
+    }
+    return false;
   }
 
   public boolean isValid(String token, UserDetails student){
